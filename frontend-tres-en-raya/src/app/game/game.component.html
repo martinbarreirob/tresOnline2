@@ -1,0 +1,17 @@
+<h1>MESA</h1>
+
+<div class="row">
+  <div class="col">
+    <h2>{{ player.nombre }}</h2>
+  </div>
+  <div class="col">
+    <h2>{{ opponent?.nombre }}</h2>
+  </div>
+</div>
+<table class="game-board m-5">
+  <tr *ngFor="let row of [0, 1, 2]">
+    <td *ngFor="let col of [0, 1, 2]" (click)="makeMove(row, col)">
+      {{ board[row][col] }}
+    </td>
+  </tr>
+</table>

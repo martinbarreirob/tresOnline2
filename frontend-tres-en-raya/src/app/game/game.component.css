@@ -1,0 +1,14 @@
+.game-board {
+  border-collapse: collapse;
+  width: 300px;
+  height: 300px;
+}
+
+.game-board td {
+  border: 12px solid rgb(72, 87, 255);
+  width: 33.33%;
+  height: 33.33%;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 24px;
+}
