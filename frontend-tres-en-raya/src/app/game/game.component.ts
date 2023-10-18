@@ -9,8 +9,6 @@ import { Player, Game } from '../models/interfaces.model';
   styleUrls: ['./game.component.css']
 })
 export class GameComponent implements OnInit {
-  constructor (private http: HttpClient, private socketService: SocketService, private gameService: GameService){}
-
   private baseUrl: string = 'http://localhost:3000/';
   board: string[][] = [
     ['', '', ''],
@@ -22,6 +20,12 @@ export class GameComponent implements OnInit {
   game: any;
   opponent: any;
 
+  constructor (private http: HttpClient, private socketService: SocketService){
+    this.socketService.listen('game-updated').subscribe(game =>{
+      console.log('listen update');
+
+    })
+  }
 
   ngOnInit(): void{
     let playerLocalStorage = localStorage.getItem('player');
@@ -69,7 +73,17 @@ export class GameComponent implements OnInit {
       board: board,
       turn: turn,
     }
-    return this.http.put(`${this.baseUrl}game/${this.game.id}`, gameData);
+
+    this.http.put<Game>(`${this.baseUrl}game/${this.game.id}`, gameData).subscribe(
+      updateGame => {
+        console.log('update')
+        this.socketService.emit("game-updated", updateGame);
+
+      },
+      error => {
+        console.error('Error al actualizar el juego:', error); // <-- Agrega esta línea
+      }
+    );
   }
 
 

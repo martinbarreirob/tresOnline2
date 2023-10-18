@@ -16,15 +16,16 @@ import { SocketService } from '../socket.service';
 export class LoggingComponent implements OnInit{
   @Output() emitRegistered = new EventEmitter<void>();
 
+
   private baseUrl: string = 'http://localhost:3000/';
-  inputNombre: string = '';
-  freeGame: any;
-  isRegistered: boolean = false;
-  socket: any;
-  opponent: any;
+  public inputNombre: string = '';
+  private socket: any;
+
 
   constructor (private http: HttpClient, private socketService: SocketService){
     this.socket = this.socketService;
+
+
   }
 
   ngOnInit(): void {

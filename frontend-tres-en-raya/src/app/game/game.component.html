@@ -1,4 +1,4 @@
-<h1>MESA</h1>
+<!-- <h1>MESA</h1>
 
 <div class="row">
   <div class="col">
@@ -14,4 +14,29 @@
       {{ board[row][col] }}
     </td>
   </tr>
-</table>
+</table> -->
+
+
+<div class="game-container">
+  <div class="player-section bg-blue d-flex align-items-center justify-content-center">
+      <h1>{{ player.nombre }}</h1>
+  </div>
+
+
+
+  <div class="player-section bg-purple d-flex align-items-center justify-content-center">
+      <h1>{{ opponent?.nombre }}</h1>
+  </div>
+
+  <div class="board-container">
+    <table class="tres-en-raya">
+      <tr *ngFor="let row of [0, 1, 2]">
+        <td *ngFor="let col of [0, 1, 2]" (click)="makeMove(row, col)">
+          {{ board[row][col] }}
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+

@@ -1,0 +1,23 @@
+:host {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.full-height {
+  min-height: 90vh;
+  padding: 15px 0;
+}
+
+.titulo {
+  font-size: calc(8vw); /* Tamaño dinámico basado en el ancho de la pantalla */
+  margin-bottom: 20px;
+  line-height: 1.1; /* Espaciado de línea más ajustado */
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+}
+
+input[type="text"] {
+  max-width: 200px; /* Ancho máximo para el input */
+  margin: 0 auto; /* Centrar el input */
+}

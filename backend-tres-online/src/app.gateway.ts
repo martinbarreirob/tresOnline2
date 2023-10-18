@@ -25,6 +25,12 @@ export class AppGateway {
     client.broadcast.emit('new-player', data);
   }
 
+  @SubscribeMessage('game-updated')
+  handleGameUpdated(client: Socket, data: any) {
+    console.log('Nuevo jugador conectado:', data);
+    client.broadcast.emit('new-player', data);
+  }
+
 
   @SubscribeMessage('create-game')
   handleCreateGame(client: Socket, payload: any): void {
