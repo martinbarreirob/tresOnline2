@@ -7,7 +7,7 @@ node_modules
 /integration/bazel/bazel-*
 *.log
 /node_modules/
-/frontend-tres-en-raya/.angular/
+angular/cache/16.2.6
 # CircleCI temporary file for cache key computation.
 # See `save_month_to_file` in `.circleci/config.yml`.
 month.txt

@@ -17,7 +17,6 @@ export class AppComponent implements OnInit {
   }
 
   setRegistered() {
-    console.log('registro')
     this.isRegistered = true;
   }
 }

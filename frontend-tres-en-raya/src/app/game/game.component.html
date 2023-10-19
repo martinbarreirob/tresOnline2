@@ -1,34 +1,56 @@
-<!-- <h1>MESA</h1>
+<!-- PANTALLA WAITING FOR OPPONENT -->
+<div class="waiting text-center" *ngIf="(currentPlayer !== game?.turn || !opponent ) && gameOver != true">
+    <div>
+      <p>Waiting For Opponent</p>
+    </div>
+    <span class="loader"></span>
+</div>
 
-<div class="row">
-  <div class="col">
-    <h2>{{ player.nombre }}</h2>
-  </div>
-  <div class="col">
-    <h2>{{ opponent?.nombre }}</h2>
+<!-- ALERTA DE VICTORIA -->
+<div class="alert" *ngIf="gameOver">
+  <div type="button" (click)="restartGame()" class="alert-win text-center">
+    <div class="alert-msg">YOU WIN</div>
+    <div class="alert-span">click for restart</div>
+
   </div>
 </div>
-<table class="game-board m-5">
-  <tr *ngFor="let row of [0, 1, 2]">
-    <td *ngFor="let col of [0, 1, 2]" (click)="makeMove(row, col)">
-      {{ board[row][col] }}
-    </td>
-  </tr>
-</table> -->
 
 
+<!-- LOGICA DEL JUEGO -->
 <div class="game-container">
-  <div class="player-section bg-blue d-flex align-items-center justify-content-center">
-      <h1>{{ player.nombre }}</h1>
+  <!-- PLAYER X -->
+  <div class="player-section bg-blue d-flex justify-content-center" [ngClass]="{'degradadoX': game?.turn === 'X' || gameOver === true}">
+    <div class="text-center mt-5" *ngIf="currentPlayer === 'X'">
+      <div class="playerName">{{ player.nombre }}</div>
+      <div class="turno" *ngIf="currentPlayer === game?.turn">TU TURNO</div>
+      <div class="playerName">0</div>
+    </div>
+    <div class="text-center mt-5" *ngIf="currentPlayer === 'O'">
+      <div class="playerName">{{ opponent?.nombre }}</div>
+      <div class="playerName">0</div>
+    </div>
+  </div>
+
+
+  <!-- PLAYER O -->
+  <div class="player-section bg-purple d-flex justify-content-center" [ngClass]="{'degradadoY': game?.turn === 'O' || gameOver === true}">
+    <div  class="text-center mt-5" *ngIf="currentPlayer === 'O'">
+        <div class="playerName">{{ player.nombre }}</div>
+        <div class="turno" *ngIf="currentPlayer === game?.turn">TU TURNO</div>
+        <div class="playerName">0</div>
+    </div>
+    <div  class="text-center mt-5" *ngIf="currentPlayer === 'X'">
+        <div class="playerName">{{ opponent?.nombre }}</div>
+        <div class="playerName">1</div>
+    </div>
   </div>
 
 
 
-  <div class="player-section bg-purple d-flex align-items-center justify-content-center">
-      <h1>{{ opponent?.nombre }}</h1>
-  </div>
-
+  <!-- TABLERO -->
   <div class="board-container">
+
+
     <table class="tres-en-raya">
       <tr *ngFor="let row of [0, 1, 2]">
         <td *ngFor="let col of [0, 1, 2]" (click)="makeMove(row, col)">
@@ -38,5 +60,3 @@
     </table>
   </div>
 </div>
-
-

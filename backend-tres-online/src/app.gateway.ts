@@ -1,3 +1,5 @@
+//app.gatewat.ts
+
 import { SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
@@ -22,13 +24,13 @@ export class AppGateway {
   @SubscribeMessage('player-connected')
   handlePlayerConnected(client: Socket, data: any) {
     console.log('Nuevo jugador conectado:', data);
-    client.broadcast.emit('new-player', data);
+    client.broadcast.emit('player-connected', data);
   }
 
   @SubscribeMessage('game-updated')
   handleGameUpdated(client: Socket, data: any) {
-    console.log('Nuevo jugador conectado:', data);
-    client.broadcast.emit('new-player', data);
+    console.log('Mesa de juego actualizada:', data);
+    this.server.emit('game-updated', data);
   }
 
 

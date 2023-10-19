@@ -1,3 +1,5 @@
+//socket.service.ts
+
 import { Injectable } from '@angular/core';
 import * as io from 'socket.io-client';
 import { Observable } from 'rxjs';  // No olvides importar Observable
