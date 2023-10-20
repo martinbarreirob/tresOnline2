@@ -1,5 +1,5 @@
 <!-- PANTALLA WAITING FOR OPPONENT -->
-<div class="waiting text-center" *ngIf="(currentPlayer !== game?.turn || !opponent ) && gameOver != true">
+<div class="waiting text-center" *ngIf="(((currentPlayer !== game?.turn || !opponent ) && gameOver != true) || playerReadyRestart)">
     <div>
       <p>Waiting For Opponent</p>
     </div>
@@ -7,9 +7,9 @@
 </div>
 
 <!-- ALERTA DE VICTORIA -->
-<div class="alert" *ngIf="gameOver">
-  <div type="button" (click)="restartGame()" class="alert-win text-center">
-    <div class="alert-msg">YOU WIN</div>
+<div class="alert" *ngIf="gameOver === true">
+  <div type="button" (click)="emitRestartGame()" class="alert-win text-center">
+    <div class="alert-msg" *ngIf="gameOver">{{ winner }}</div>
     <div class="alert-span">click for restart</div>
 
   </div>
@@ -22,35 +22,30 @@
   <div class="player-section bg-blue d-flex justify-content-center" [ngClass]="{'degradadoX': game?.turn === 'X' || gameOver === true}">
     <div class="text-center mt-5" *ngIf="currentPlayer === 'X'">
       <div class="playerName">{{ player.nombre }}</div>
+      <div class="playerName">{{ game.winX }}</div>
       <div class="turno" *ngIf="currentPlayer === game?.turn">TU TURNO</div>
-      <div class="playerName">0</div>
     </div>
     <div class="text-center mt-5" *ngIf="currentPlayer === 'O'">
       <div class="playerName">{{ opponent?.nombre }}</div>
-      <div class="playerName">0</div>
+      <div class="playerName">{{ game.winX }}</div>
     </div>
   </div>
-
 
   <!-- PLAYER O -->
   <div class="player-section bg-purple d-flex justify-content-center" [ngClass]="{'degradadoY': game?.turn === 'O' || gameOver === true}">
     <div  class="text-center mt-5" *ngIf="currentPlayer === 'O'">
         <div class="playerName">{{ player.nombre }}</div>
+        <div class="playerName">{{ game.winO }}</div>
         <div class="turno" *ngIf="currentPlayer === game?.turn">TU TURNO</div>
-        <div class="playerName">0</div>
     </div>
     <div  class="text-center mt-5" *ngIf="currentPlayer === 'X'">
         <div class="playerName">{{ opponent?.nombre }}</div>
-        <div class="playerName">1</div>
+        <div class="playerName">{{ game.winO }}</div>
     </div>
   </div>
 
-
-
   <!-- TABLERO -->
   <div class="board-container">
-
-
     <table class="tres-en-raya">
       <tr *ngFor="let row of [0, 1, 2]">
         <td *ngFor="let col of [0, 1, 2]" (click)="makeMove(row, col)">
@@ -59,4 +54,5 @@
       </tr>
     </table>
   </div>
+
 </div>

@@ -28,15 +28,13 @@ export class GameController {
     return this.gameService.findOne(id);
   }
 
-
-
   @Post()
-  create(@Body() gameData: { board: string, status: number, playerXid: number, playerOid: number, turn: 'X' | 'O' }): Promise<Game> {
+  create(@Body() gameData: { board: string, status: number, playerXid: number, playerOid: number, turn: 'X' | 'O' , winX: number, winO: number}): Promise<Game> {
     return this.gameService.create(gameData);
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() gameData: { board?: any, status?: number, playerXid?: number, playerOid?: number, turn?: 'X' | 'O' }): Promise<Game> {
+  update(@Param('id') id: number, @Body() gameData: { board?: any, status?: number, playerXid?: number, playerOid?: number, turn?: 'X' | 'O', winX?: number, winO?: number }): Promise<Game> {
     return this.gameService.update(id, gameData);
   }
 

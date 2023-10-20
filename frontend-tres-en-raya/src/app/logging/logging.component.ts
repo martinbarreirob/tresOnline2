@@ -17,7 +17,7 @@ export class LoggingComponent implements OnInit{
   @Output() emitRegistered = new EventEmitter<void>();
 
 
-  private baseUrl: string = 'http://localhost:3000/';
+  private baseUrl: string = 'http://192.168.0.42:3000/';
   public inputNombre: string = '';
   private socket: any;
 
@@ -33,6 +33,10 @@ export class LoggingComponent implements OnInit{
   }
 
   registroUser(): void {
+    if(this.inputNombre === ''){
+      this.inputNombre = 'user';
+    }
+
     this.insertPlayer(this.inputNombre).subscribe((player: Player) => {
 
       localStorage.setItem('player', JSON.stringify(player));

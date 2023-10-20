@@ -11,7 +11,7 @@ import { Player, Game } from '../models/interfaces.model';
   styleUrls: ['./game.component.css']
 })
 export class GameComponent implements OnInit {
-  private baseUrl: string = 'http://localhost:3000/';
+  private baseUrl: string = 'http://192.168.0.42:3000/';
   board: string[][] = [
     ['', '', ''],
     ['', '', ''],
@@ -22,6 +22,9 @@ export class GameComponent implements OnInit {
   opponent: any;
   currentPlayer: any;
   gameOver: boolean = false;
+  winner: string | null = null;
+  playerReadyRestart: boolean = false;
+  opponentReadyRestart: boolean = false;
 
   constructor (private http: HttpClient, private socketService: SocketService){}
 
@@ -57,7 +60,16 @@ export class GameComponent implements OnInit {
     this.socketService.listen('game-updated').subscribe(game => {
       this.game = game;
       this.board = JSON.parse(this.game.board);
-      this.checkWinner();
+      this.winner = this.checkWinner();
+    });
+
+    this.socketService.listen('restart-game').subscribe(game => {
+      this.opponentReadyRestart = true;
+
+      if(this.opponentReadyRestart && this.playerReadyRestart === true){
+        this.restartGame();
+        this.socketService.emit('restart-game', this.player);
+      }
     });
 
 
@@ -102,33 +114,9 @@ export class GameComponent implements OnInit {
     let boardString = JSON.stringify(this.board);
     let nextTurn = this.game.turn === 'X' ? 'O' : 'X';
     this.updateBoard(boardString, nextTurn);
-
-    this.checkWinner();
-}
-
-
-
-
-
-  updateBoard(board: string, turn: string) {
-    const gameData = {
-        board: board,
-        turn: turn,
-    }
-
-    this.http.put<Game>(`${this.baseUrl}game/${this.game.id}`, gameData).subscribe(
-        updateGame => {
-            this.socketService.emit("game-updated", updateGame);
-            this.checkWinner();
-
-        },
-        error => {
-            console.error('Error al actualizar el juego:', error);
-        }
-    );
   }
 
-  checkWinner(): string | null {
+  checkWinner(): string | null {  //PROBANDO TODAVÍA FALTA AÑADIR FUNCION UPDATEWINNER
     // Comprobar filas, columnas y diagonales
     const winningCombinations = [
         // Filas
@@ -145,47 +133,86 @@ export class GameComponent implements OnInit {
     ];
 
     for (let combination of winningCombinations) {
-        if (combination[0] && combination[0] === combination[1] && combination[1] === combination[2]) {
-            this.gameOver = true;
-            return combination[0]; // Retorna 'X' o 'O' según el ganador
-        }
+      if (combination[0] && combination[0] === combination[1] && combination[1] === combination[2]) {
+          this.gameOver = true;
+
+          // Comprueba si el ganador es la X
+          if ((combination[0] === 'X' && this.game.playerXid === this.player.id) || (combination[0] === 'O' && this.game.playerOid === this.player.id)) {
+              return 'X';
+          } else {
+              return 'O';
+          }
+      }
     }
 
-    // Comprobar empate: si no hay ninguna celda vacía y no hay ganador
+    // Comprobar empate
     const isDraw = this.board.flat().every(cell => cell !== '');
     if (isDraw) {
         this.gameOver = true;
-        return 'Draw';
     }
 
-    return null; // No hay ganador ni empate aún
+    return null;
   }
 
-  restartGame(){
-    this.gameOver = false;
+  updateWinner(winner: string) {
+    let gameData: any;
 
+    if(winner === 'X'){
+      gameData = {
+        winX: ++this.game.winX
+      }
+      console.log('ganax');
+
+    }else if(winner === 'O'){
+      gameData = {
+        winO: ++this.game.winO
+      }
+    }
+
+    this.http.put<Game>(`${this.baseUrl}game/${this.game.id}`, gameData).subscribe((salida)=>{
+      console.log(salida);
+
+    });
+  }
+
+  updateBoard(board: string, turn: string) {
     const gameData = {
-      board: [
-        ['', '', ''],
-        ['', '', ''],
-        ['', '', '']
-      ],
-      turn: "",
-  }
+        board: board,
+        turn: turn,
+    }
 
     this.http.put<Game>(`${this.baseUrl}game/${this.game.id}`, gameData).subscribe(
-      updateGame => {
-          this.socketService.emit("game-updated", updateGame);
-          this.checkWinner();
+        updateGame => {
+            this.socketService.emit("game-updated", updateGame);
+        },
+        error => {
+            console.error('Error al actualizar el juego:', error);
+        }
+    );
+  }
 
-      },
-      error => {
-          console.error('Error al actualizar el juego:', error);
-      }
-  );
+  emitRestartGame(){
+    this.playerReadyRestart = true;
+
+    this.socketService.emit('restart-game', this.player)
   }
 
 
+  restartGame(){
+    let tableroLimpio = [
+      ['', '', ''],
+      ['', '', ''],
+      ['', '', '']
+    ];
+    let turno = Math.random() < 0.5 ? 'X' : 'O';
 
+    this.gameOver = false;
+    this.winner = null;
+    this.playerReadyRestart = false;
+    this.opponentReadyRestart = false;
 
+    this.updateBoard(JSON.stringify(tableroLimpio), turno);
+  }
 }
+
+

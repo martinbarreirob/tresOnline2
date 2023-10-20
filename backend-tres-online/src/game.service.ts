@@ -17,7 +17,12 @@ export class GameService {
   }
 
   async findFreeGame(): Promise<Game> {
-    const game = await this.gameRepository.findOne({ where: { status: 0 } });
+    const game = await this.gameRepository
+      .createQueryBuilder('game')
+      .where('game.status = 0')
+      .orWhere('game.playerXid = 0 OR game.playerOid = 0 ')
+      .getOne();
+
     return game;
   }
 
@@ -41,12 +46,12 @@ async findOne(id: number): Promise<Game> {
 }
 
 
-  async create(data: { board: string, status: number, playerXid: number, playerOid: number, turn: 'X' | 'O' }): Promise<Game> {
+  async create(data: { board: string, status: number, playerXid: number, playerOid: number, turn: 'X' | 'O', winX: number, winO: number }): Promise<Game> {
     const game = this.gameRepository.create(data);
     return await this.gameRepository.save(game);
   }
 
-  async update(id: number, data: { board?: string, status?: number, playerXid?: number, playerOid?: number, turn?: 'X' | 'O' }): Promise<Game> {
+  async update(id: number, data: { board?: string, status?: number, playerXid?: number, playerOid?: number, turn?: 'X' | 'O' , winX?: number, winO?: number}): Promise<Game> {
     const game = await this.findOne(id); // This will throw an exception if not found
     this.gameRepository.merge(game, data);
     return await this.gameRepository.save(game);

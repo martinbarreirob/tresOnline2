@@ -20,7 +20,7 @@
 }
 
 .bg-blue {
-  background-color: rgb(93, 179, 255);
+  background-color: rgb(53, 152, 238);
   -webkit-box-shadow: inset -11px 0px 20px -12px rgba(0,0,0,0.75);
   -moz-box-shadow: inset -11px 0px 20px -12px rgba(0,0,0,0.75);
   box-shadow: inset -11px 0px 20px -12px rgba(0,0,0,0.75);
@@ -149,10 +149,10 @@ box-shadow: inset 11px 0px 20px -12px rgba(0,0,0,0.75);
 
 .degradadoX {
 	background: rgb(0,212,255);
-  background: radial-gradient(circle, rgba(0,212,255,1) 0%, rgba(46,156,255,1) 45%, rgba(0,15,255,1) 100%);
+  background: radial-gradient(circle, rgb(113, 227, 250) 0%, rgb(30, 128, 213) 45%, rgb(18, 1, 206) 100%);
 	background-size: 400% 400%;
-	-webkit-animation: gradient 5s ease infinite;
-	        animation: gradient 5s ease infinite;
+	-webkit-animation: gradient 2s ease infinite;
+	        animation: gradient 2s ease infinite;
 }
 
 @-webkit-keyframes gradient {
@@ -182,10 +182,10 @@ box-shadow: inset 11px 0px 20px -12px rgba(0,0,0,0.75);
 
 .degradadoY {
   background: rgb(255,194,87);
-  background: radial-gradient(circle, rgba(255,194,87,1) 0%, rgba(255,117,0,1) 68%, rgba(179,60,0,1) 100%);
+  background: radial-gradient(circle, rgba(255,194,87,1) 0%, rgba(255,117,0,1) 68%, rgb(179, 30, 0) 100%);
 	background-size: 400% 400%;
-	-webkit-animation: gradient 5s ease infinite;
-	        animation: gradient 5s ease infinite;
+	-webkit-animation: gradient 2s ease infinite;
+	        animation: gradient 2s ease infinite;
 }
 
 @-webkit-keyframes gradient {

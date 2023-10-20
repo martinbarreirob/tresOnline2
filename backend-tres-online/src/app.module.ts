@@ -14,8 +14,8 @@ import { AppGateway } from './app.gateway';
       type: 'mysql',
       host: 'localhost',
       port: 3306,
-      username: 'root', // Usuario por defecto en XAMPP
-      password: '',     // Contraseña vacía por defecto en XAMPP
+      username: 'martin', // Usuario por defecto en XAMPP
+      password: 'abc123.,',     // Contraseña vacía por defecto en XAMPP
       database: 'tres_en_raya_db', // El nombre de tu base de datos
       entities: [Game, Player], // Ubicación de tus entidades
       synchronize: true, // Esto creará/modificará las tablas automáticamente según tus entidades. Útil en desarrollo pero peligroso en producción.
