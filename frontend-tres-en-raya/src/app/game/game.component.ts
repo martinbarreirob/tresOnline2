@@ -11,17 +11,20 @@ import { Player, Game } from '../models/interfaces.model';
   styleUrls: ['./game.component.css']
 })
 export class GameComponent implements OnInit {
-  private baseUrl: string = 'http://localhost:3000/';
+  private baseUrl: string = 'http://192.168.0.42:3000/';
   board: string[][] = [
     ['', '', ''],
     ['', '', ''],
     ['', '', '']
-  ];
+  ];//X
   player: any;
   game: any;
   opponent: any;
   currentPlayer: any;
   gameOver: boolean = false;
+  winner: string | null = null;
+  playerReadyRestart: boolean = false;
+  opponentReadyRestart: boolean = false;
 
   constructor (private http: HttpClient, private socketService: SocketService){}
 
@@ -50,18 +53,42 @@ export class GameComponent implements OnInit {
       }
     })
 
+    this.setupSocketListeners();
+  }
+
+  private setupSocketListeners(): void {
     this.socketService.listen('player-connected').subscribe(newPlayer => {
       this.opponent = newPlayer;
+    });
+
+    this.socketService.listen('winner-updated').subscribe(game => {
+      this.game = game;
+      this.game.turn = null;
     });
 
     this.socketService.listen('game-updated').subscribe(game => {
       this.game = game;
       this.board = JSON.parse(this.game.board);
-      this.checkWinner();
+      this.winner = this.checkWinner();
+
+      //Con esta condición solo lanzo el update winner en el cliente que gana y este emite un evento para que se lance en el otro usuario
+      if( this.winner === 'X' && this.game.playerXid === this.player.id ){
+        this.updateWinner(this.winner);
+
+      }else if(this.winner === 'O' && this.game.playerOid === this.player.id ){
+        this.updateWinner(this.winner);
+
+      }
     });
 
+    this.socketService.listen('restart-game').subscribe(game => {
+      this.opponentReadyRestart = true;
 
-
+      if(this.opponentReadyRestart && this.playerReadyRestart === true){
+        this.restartGame();
+        this.socketService.emit('restart-game', this.player);
+      }
+    });
   }
 
 
@@ -102,33 +129,9 @@ export class GameComponent implements OnInit {
     let boardString = JSON.stringify(this.board);
     let nextTurn = this.game.turn === 'X' ? 'O' : 'X';
     this.updateBoard(boardString, nextTurn);
-
-    this.checkWinner();
-}
-
-
-
-
-
-  updateBoard(board: string, turn: string) {
-    const gameData = {
-        board: board,
-        turn: turn,
-    }
-
-    this.http.put<Game>(`${this.baseUrl}game/${this.game.id}`, gameData).subscribe(
-        updateGame => {
-            this.socketService.emit("game-updated", updateGame);
-            this.checkWinner();
-
-        },
-        error => {
-            console.error('Error al actualizar el juego:', error);
-        }
-    );
   }
 
-  checkWinner(): string | null {
+  checkWinner(): string | null {  //PROBANDO TODAVÍA FALTA AÑADIR FUNCION UPDATEWINNER
     // Comprobar filas, columnas y diagonales
     const winningCombinations = [
         // Filas
@@ -145,47 +148,76 @@ export class GameComponent implements OnInit {
     ];
 
     for (let combination of winningCombinations) {
-        if (combination[0] && combination[0] === combination[1] && combination[1] === combination[2]) {
-            this.gameOver = true;
-            return combination[0]; // Retorna 'X' o 'O' según el ganador
-        }
+      if (combination[0] && combination[0] === combination[1] && combination[1] === combination[2]) {
+          this.gameOver = true;
+          return combination[0]
+      }
     }
 
-    // Comprobar empate: si no hay ninguna celda vacía y no hay ganador
+    // Comprobar empate
     const isDraw = this.board.flat().every(cell => cell !== '');
     if (isDraw) {
         this.gameOver = true;
-        return 'Draw';
     }
 
-    return null; // No hay ganador ni empate aún
+    return null;
   }
 
-  restartGame(){
-    this.gameOver = false;
+  updateWinner(winner: string) {
+    let gameData: any;
 
+    if(winner === 'X'){
+      gameData = {
+        winX: ++this.game.winX
+      }
+    }else if(winner === 'O'){
+      gameData = {
+        winO: ++this.game.winO
+      }
+    }
+
+    this.http.put<Game>(`${this.baseUrl}game/${this.game.id}`, gameData).subscribe((game)=>{
+      this.socketService.emit('winner-updated', game);
+    });
+  }
+
+  updateBoard(board: string, turn: string) {
     const gameData = {
-      board: [
-        ['', '', ''],
-        ['', '', ''],
-        ['', '', '']
-      ],
-      turn: "",
-  }
+        board: board,
+        turn: turn,
+    }
 
     this.http.put<Game>(`${this.baseUrl}game/${this.game.id}`, gameData).subscribe(
-      updateGame => {
-          this.socketService.emit("game-updated", updateGame);
-          this.checkWinner();
+        updateGame => {
+            this.socketService.emit("game-updated", updateGame);
+        },
+        error => {
+            console.error('Error al actualizar el juego:', error);
+        }
+    );
+  }
 
-      },
-      error => {
-          console.error('Error al actualizar el juego:', error);
-      }
-  );
+  emitRestartGame(){
+    this.playerReadyRestart = true;
+    this.socketService.emit('restart-game', this.player)
   }
 
 
+  restartGame(){
+    let tableroLimpio = [
+      ['', '', ''],
+      ['', '', ''],
+      ['', '', '']
+    ];
+    let turno = Math.random() < 0.5 ? 'X' : 'O';
 
+    this.gameOver = false;
+    this.winner = null;
+    this.playerReadyRestart = false;
+    this.opponentReadyRestart = false;
 
+    this.updateBoard(JSON.stringify(tableroLimpio), turno);
+  }
 }
+
+

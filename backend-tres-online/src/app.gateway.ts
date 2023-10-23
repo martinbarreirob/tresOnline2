@@ -5,7 +5,7 @@ import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({
   cors: {
-    origin: "http://localhost:4200",  // URL de tu frontend
+    origin: true,  // URL de tu frontend
     methods: ["GET", "POST"],
     allowedHeaders: ["my-custom-header"],
     credentials: true
@@ -13,13 +13,6 @@ import { Server, Socket } from 'socket.io';
 })
 export class AppGateway {
   @WebSocketServer() server: Server;
-
-  // Esta función se llama cuando un jugador se une al juego
-  handleConnection(client: Socket): void {
-   // console.log(`Usuario con ID ${client.id} se ha conectado`); Esto es para la consola del backend
-    this.server.emit('nuevo-usuario', `Usuario con ID ${client.id} se ha conectado`);
-  }
-
 
   @SubscribeMessage('player-connected')
   handlePlayerConnected(client: Socket, data: any) {
@@ -33,11 +26,22 @@ export class AppGateway {
     this.server.emit('game-updated', data);
   }
 
-
   @SubscribeMessage('create-game')
   handleCreateGame(client: Socket, payload: any): void {
     console.log(`${payload.playerName} created the game ${payload.gameId}`);
     client.broadcast.emit('game-created', payload);
+  }
+
+  @SubscribeMessage('restart-game')
+  handleRestartGame(client: Socket, payload: any): void {
+    console.log(`${payload.playerName} restart game ${payload}`);
+    client.broadcast.emit('restart-game', payload);
+  }
+
+  @SubscribeMessage('winner-updated')
+  handleWinnerUpdated(client: Socket, data: any) {
+    console.log('Mesa de juego actualizada:', data);
+    this.server.emit('winner-updated', data);
   }
 
 }

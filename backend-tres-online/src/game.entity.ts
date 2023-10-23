@@ -24,4 +24,10 @@ export class Game {
     enum: ['X', 'O'],
   })
   turn: 'X' | 'O';
+
+  @Column('int')
+  winX: number;
+
+  @Column('int')
+  winO: number;
 }
