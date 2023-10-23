@@ -16,6 +16,16 @@
 </div>
 
 
+<!-- MENSAJE DE OPONENTE DESCONECTADO -->
+<div class="alert" *ngIf="opponentDisconnected === true">
+  <div type="button" class="alert-win text-center" (click)="reloadPage()">
+    <div class="alert-disconnected">Opponente Disconnected</div>
+    <div class="alert-span">click for restart</div>
+  </div>
+</div>
+
+
+
 <!-- LOGICA DEL JUEGO -->
 <div class="game-container">
   <!-- PLAYER X -->

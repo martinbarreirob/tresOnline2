@@ -1,22 +1,25 @@
 //game.component.ts
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SocketService } from '../socket.service'; // Asegúrate de importar tu servicio
 import { HttpClient } from '@angular/common/http';
 import { Player, Game } from '../models/interfaces.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-game',
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.css']
 })
-export class GameComponent implements OnInit {
+export class GameComponent implements OnInit, OnDestroy {
+  private disconnectionSubscription: Subscription= new Subscription();
   private baseUrl: string = 'http://192.168.0.42:3000/';
+
   board: string[][] = [
     ['', '', ''],
     ['', '', ''],
     ['', '', '']
-  ];//X
+  ];
   player: any;
   game: any;
   opponent: any;
@@ -25,6 +28,8 @@ export class GameComponent implements OnInit {
   winner: string | null = null;
   playerReadyRestart: boolean = false;
   opponentReadyRestart: boolean = false;
+  opponentDisconnected: boolean = false;
+
 
   constructor (private http: HttpClient, private socketService: SocketService){}
 
@@ -49,11 +54,14 @@ export class GameComponent implements OnInit {
         this.http.get<Player>(`${this.baseUrl}player/${this.game.playerXid}`).subscribe((playerX) => {
           this.opponent = playerX;
        });
-
       }
-    })
+    });
 
     this.setupSocketListeners();
+  }
+
+  ngOnDestroy(): void{
+    this.disconnectionSubscription.unsubscribe();
   }
 
   private setupSocketListeners(): void {
@@ -89,6 +97,15 @@ export class GameComponent implements OnInit {
         this.socketService.emit('restart-game', this.player);
       }
     });
+
+    this.socketService.listen('player-disconnected').subscribe(game => {
+      this.opponentDisconnected = true;
+    })
+
+
+
+
+
   }
 
 
@@ -217,6 +234,10 @@ export class GameComponent implements OnInit {
     this.opponentReadyRestart = false;
 
     this.updateBoard(JSON.stringify(tableroLimpio), turno);
+  }
+
+  reloadPage(): void {
+    window.location.reload();
   }
 }
 

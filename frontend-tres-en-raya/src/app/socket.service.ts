@@ -12,10 +12,6 @@ export class SocketService {
 
   constructor() {
     this.socket = io.connect('http://192.168.0.42:3000'); // Asume que tu servidor backend corre en el puerto 3000
-
-    // this.socket.on('nuevo-usuario', (message: string) => {
-    //   console.log(message);
-    // });
   }
 
   // Método para emitir eventos
@@ -31,5 +27,11 @@ export class SocketService {
       });
     });
   }
+
+  onPlayerDisconnected(): Observable<any> {
+    return this.socket.fromEvent('player-disconnected');
+  }
+
+
 
 }

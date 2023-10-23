@@ -38,10 +38,13 @@ export class AppGateway {
     client.broadcast.emit('restart-game', payload);
   }
 
-  @SubscribeMessage('winner-updated')
-  handleWinnerUpdated(client: Socket, data: any) {
-    console.log('Mesa de juego actualizada:', data);
-    this.server.emit('winner-updated', data);
+  @SubscribeMessage('player-disconnected')
+  handleDisconnect(client: Socket) {
+    console.log('Client disconnected:', client.id);
+    // Aquí puedes emitir un evento para informar a otros clientes sobre la desconexión
+    this.server.emit('player-disconnected', { playerId: client.id });
   }
+
+  
 
 }
