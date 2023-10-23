@@ -26,7 +26,6 @@ export class AppGateway {
     this.server.emit('game-updated', data);
   }
 
-
   @SubscribeMessage('create-game')
   handleCreateGame(client: Socket, payload: any): void {
     console.log(`${payload.playerName} created the game ${payload.gameId}`);
@@ -37,6 +36,12 @@ export class AppGateway {
   handleRestartGame(client: Socket, payload: any): void {
     console.log(`${payload.playerName} restart game ${payload}`);
     client.broadcast.emit('restart-game', payload);
+  }
+
+  @SubscribeMessage('winner-updated')
+  handleWinnerUpdated(client: Socket, data: any) {
+    console.log('Mesa de juego actualizada:', data);
+    this.server.emit('winner-updated', data);
   }
 
 }
