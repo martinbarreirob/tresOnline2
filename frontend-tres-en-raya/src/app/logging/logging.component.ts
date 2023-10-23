@@ -21,11 +21,8 @@ export class LoggingComponent implements OnInit{
   public inputNombre: string = '';
   private socket: any;
 
-
   constructor (private http: HttpClient, private socketService: SocketService){
     this.socket = this.socketService;
-
-
   }
 
   ngOnInit(): void {
@@ -38,7 +35,6 @@ export class LoggingComponent implements OnInit{
     }
 
     this.insertPlayer(this.inputNombre).subscribe((player: Player) => {
-
       localStorage.setItem('player', JSON.stringify(player));
 
       this.searchForGame().subscribe(freeGame => {
@@ -103,5 +99,4 @@ export class LoggingComponent implements OnInit{
       })
     );
   }
-
 }

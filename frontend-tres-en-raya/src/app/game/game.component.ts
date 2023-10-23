@@ -16,7 +16,7 @@ export class GameComponent implements OnInit {
     ['', '', ''],
     ['', '', ''],
     ['', '', '']
-  ];
+  ];//X
   player: any;
   game: any;
   opponent: any;
@@ -53,14 +53,32 @@ export class GameComponent implements OnInit {
       }
     })
 
+    this.setupSocketListeners();
+  }
+
+  private setupSocketListeners(): void {
     this.socketService.listen('player-connected').subscribe(newPlayer => {
       this.opponent = newPlayer;
+    });
+
+    this.socketService.listen('winner-updated').subscribe(game => {
+      this.game = game;
+      this.game.turn = null;
     });
 
     this.socketService.listen('game-updated').subscribe(game => {
       this.game = game;
       this.board = JSON.parse(this.game.board);
       this.winner = this.checkWinner();
+
+      //Con esta condición solo lanzo el update winner en el cliente que gana y este emite un evento para que se lance en el otro usuario
+      if( this.winner === 'X' && this.game.playerXid === this.player.id ){
+        this.updateWinner(this.winner);
+
+      }else if(this.winner === 'O' && this.game.playerOid === this.player.id ){
+        this.updateWinner(this.winner);
+
+      }
     });
 
     this.socketService.listen('restart-game').subscribe(game => {
@@ -71,9 +89,6 @@ export class GameComponent implements OnInit {
         this.socketService.emit('restart-game', this.player);
       }
     });
-
-
-
   }
 
 
@@ -135,13 +150,7 @@ export class GameComponent implements OnInit {
     for (let combination of winningCombinations) {
       if (combination[0] && combination[0] === combination[1] && combination[1] === combination[2]) {
           this.gameOver = true;
-
-          // Comprueba si el ganador es la X
-          if ((combination[0] === 'X' && this.game.playerXid === this.player.id) || (combination[0] === 'O' && this.game.playerOid === this.player.id)) {
-              return 'X';
-          } else {
-              return 'O';
-          }
+          return combination[0]
       }
     }
 
@@ -161,17 +170,14 @@ export class GameComponent implements OnInit {
       gameData = {
         winX: ++this.game.winX
       }
-      console.log('ganax');
-
     }else if(winner === 'O'){
       gameData = {
         winO: ++this.game.winO
       }
     }
 
-    this.http.put<Game>(`${this.baseUrl}game/${this.game.id}`, gameData).subscribe((salida)=>{
-      console.log(salida);
-
+    this.http.put<Game>(`${this.baseUrl}game/${this.game.id}`, gameData).subscribe((game)=>{
+      this.socketService.emit('winner-updated', game);
     });
   }
 
@@ -193,7 +199,6 @@ export class GameComponent implements OnInit {
 
   emitRestartGame(){
     this.playerReadyRestart = true;
-
     this.socketService.emit('restart-game', this.player)
   }
 
