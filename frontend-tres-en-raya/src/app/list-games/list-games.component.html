@@ -1,0 +1,15 @@
+<div class="container">
+  <div class="header">
+      <h2>Listado de partidas</h2>
+      <h2>Encuentra tu oponente!</h2>
+      <p>Pulsa para empezar partida</p>
+  </div>
+
+  <div class="task-list">
+      <div class="task" *ngFor="let game of games">
+          <span class="task-icon"></span>
+          <span class="task-description"><span class="task-title">{{game.playerXname}}</span><br>Ready to start!</span>
+          <span class="arrow">></span>
+      </div>
+  </div>
+</div>

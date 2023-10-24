@@ -8,6 +8,7 @@ import { LoggingComponent } from './logging/logging.component';
 
 import { FormsModule } from '@angular/forms';
 import { GameComponent } from './game/game.component';
+import { ListGamesComponent } from './list-games/list-games.component';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { GameComponent } from './game/game.component';
     DataViewerComponent,
     LoggingComponent,
     GameComponent,
+    ListGamesComponent,
   ],
   imports: [
     BrowserModule,

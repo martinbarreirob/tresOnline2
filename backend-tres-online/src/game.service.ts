@@ -15,6 +15,10 @@ export class GameService {
   async findAll(): Promise<Game[]> {
     return await this.gameRepository.find();
   }
+  async findAllFreeGames(): Promise<Game[]> {
+    return await this.gameRepository.find({ where: { status: 0 } });
+  }
+  
 
   async findFreeGame(): Promise<Game> {
     const game = await this.gameRepository

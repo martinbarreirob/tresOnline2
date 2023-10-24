@@ -49,7 +49,6 @@ export class LoggingComponent implements OnInit{
               console.log('Usuario añadido a Juego Disponible');
               this.socket.emit("player-connected", player);
 
-
               //Oculta formulario y muestra tablero
               this.emitRegistered.emit();
             },

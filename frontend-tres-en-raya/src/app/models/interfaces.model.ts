@@ -5,6 +5,7 @@ export interface Game {
   playerXid: number;
   playerOid: number;
   turn: 'X' | 'O';
+  playerXname?: string;
 }
 
 export interface Player {

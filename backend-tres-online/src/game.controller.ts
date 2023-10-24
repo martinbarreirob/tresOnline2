@@ -13,6 +13,11 @@ export class GameController {
     return this.gameService.findAll();
   }
 
+  @Get('/allFreeGames/')
+  findAllFreeGames(): Promise<Game[]> {
+    return this.gameService.findAllFreeGames();
+  }
+
   @Get('/playerGame/:id')
   findPlayerGame(@Param('id') id: number): Promise<Game> {
     return this.gameService.findPlayerGame(id);

@@ -35,7 +35,7 @@
       <div class="playerName">{{ game.winX }}</div>
       <div class="turno" *ngIf="currentPlayer === game?.turn">TU TURNO</div>
     </div>
-    <div class="text-center mt-5" *ngIf="currentPlayer === 'O'">
+    <div class="text-center mt-5" *ngIf="currentPlayer === 'O' && opponent != null">
       <div class="playerName">{{ opponent?.nombre }}</div>
       <div class="playerName">{{ game.winX }}</div>
     </div>
@@ -48,7 +48,7 @@
         <div class="playerName">{{ game.winO }}</div>
         <div class="turno" *ngIf="currentPlayer === game?.turn">TU TURNO</div>
     </div>
-    <div  class="text-center mt-5" *ngIf="currentPlayer === 'X'">
+    <div  class="text-center mt-5" *ngIf="currentPlayer === 'X' && opponent != null">
         <div class="playerName">{{ opponent?.nombre }}</div>
         <div class="playerName">{{ game.winO }}</div>
     </div>
