@@ -8,7 +8,7 @@ import { SocketService } from './socket.service';
 })
 export class AppComponent implements OnInit {
   title = 'frontend-tres-en-raya';
-  isRegistered = false; //CAMBIAR A FALSE
+  isRegistered = true; //CAMBIAR A FALSE
 
   constructor(private socketService: SocketService) {}
 

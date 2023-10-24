@@ -1,5 +1,4 @@
 //list-games.component.ts
-
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SocketService } from '../socket.service'; // Asegúrate de importar tu servicio
 import { HttpClient } from '@angular/common/http';
@@ -17,16 +16,37 @@ export class ListGamesComponent implements OnInit, OnDestroy {
 
   games: Array<Game> = [];
   players: Array<Player> = [];
+  user: any;
 
 
   constructor (private http: HttpClient, private socketService: SocketService){}
 
   ngOnInit(): void{
+    this.setUser();
+
+    this.getAllGamesAvaliable();
+
+  }
+
+  ngOnDestroy(): void{
+
+  }
+
+  setUser(): void{
+    let playerLocalStorage = localStorage.getItem('player');
+    if(playerLocalStorage){
+      this.user = JSON.parse(playerLocalStorage);
+      console.log(this.user);
+
+    }
+  }
+
+
+  getAllGamesAvaliable(): void{
     this.http.get<Game[]>(`${this.baseUrl}game/allFreeGames`).subscribe((games: Game[]) => {
       this.games = games
       this.http.get<Player[]>(`${this.baseUrl}player/`).subscribe((players: Player[])=>{
         this.players = players;
-        console.log(players);
         this.games.forEach(game => {
           game.playerXname = this.players.find(player => player.id === game.playerXid)?.nombre || 'Unknown';
         })
@@ -34,8 +54,19 @@ export class ListGamesComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void{
-
+  createGame(playerId: number){
+    const gameData = {
+      board: JSON.stringify([
+        ['', '', ''],
+        ['', '', ''],
+        ['', '', '']
+      ]),
+      status: 0,
+      playerXid: playerId,
+      playerOid: "",
+      turn: 'X',
+    }
+    return this.http.post<Game>(`${this.baseUrl}game/`, gameData);
   }
 
   getRandomEmoji(): string {
