@@ -7,30 +7,21 @@
 
 .player-section {
   flex: 1;
-  font-size: 2em;
 }
 
-.playerName{
-  font-size: 10vw;
+.player-points{
+  font-size: min(80px, 9vw);
   font-weight: 600;
 }
 
-.turno{
+.player-name{
+  font-size: min(80px, 10vw);
+  font-weight: 600;
+}
+
+.player-turn{
+  font-size: min(55px, 7vw);
   font-weight: 200;
-}
-
-.bg-blue {
-  background-color: rgb(53, 152, 238);
-  -webkit-box-shadow: inset -11px 0px 20px -12px rgba(0,0,0,0.75);
-  -moz-box-shadow: inset -11px 0px 20px -12px rgba(0,0,0,0.75);
-  box-shadow: inset -11px 0px 20px -12px rgba(0,0,0,0.75);
-}
-
-.bg-purple {
-  background-color: rgb(255, 157, 65);
-  -webkit-box-shadow: inset 11px 0px 20px -12px rgba(0,0,0,0.75);
--moz-box-shadow: inset 11px 0px 20px -12px rgba(0,0,0,0.75);
-box-shadow: inset 11px 0px 20px -12px rgba(0,0,0,0.75);
 }
 
 /* Estilo para el div que se superpondrá sobre todo */
@@ -100,7 +91,16 @@ box-shadow: inset 11px 0px 20px -12px rgba(0,0,0,0.75);
   font-size: 1em;
 }
 
+.divisor{
+  background-color: rgb(42, 42, 42, 0.1);
+  position: absolute;
+  height: 100%;
+  width: 2px;
+  top: 0;
+  left: 50%;
+  box-shadow: 0 0 20px rgba(62, 62, 62, 1); /* Sombra para dar efecto flotante */
 
+}
 
 /* Estilos para el tablero */
 .board-container {
@@ -113,9 +113,9 @@ box-shadow: inset 11px 0px 20px -12px rgba(0,0,0,0.75);
   height: 90vmin; /* Altura basada en la dimensión más pequeña de la pantalla */
   transform: translate(-50%, -50%); /* Centrar en la pantalla */
   background-color: white;
-  border-radius: 10px; /* Esquinas redondeadas */
+  border-radius: 15px; /* Esquinas redondeadas */
   padding: 20px; /* Espaciado interno */
-  box-shadow: 0 0 25px rgba(62, 62, 62, 0.5); /* Sombra para dar efecto flotante */
+  box-shadow: 0 0 15px rgba(62, 62, 62, 0.5); /* Sombra para dar efecto flotante */
 }
 
 .tres-en-raya {
@@ -151,73 +151,6 @@ box-shadow: inset 11px 0px 20px -12px rgba(0,0,0,0.75);
 
 
 
-
-.degradadoX {
-	background: rgb(0,212,255);
-  background: radial-gradient(circle, rgb(113, 227, 250) 0%, rgb(30, 128, 213) 45%, rgb(18, 1, 206) 100%);
-	background-size: 400% 400%;
-	-webkit-animation: gradient 2s ease infinite;
-	        animation: gradient 2s ease infinite;
-}
-
-@-webkit-keyframes gradient {
-	0% {
-		background-position: 0% 50%;
-	}
-	50% {
-		background-position: 100% 50%;
-	}
-	100% {
-		background-position: 0% 50%;
-	}
-}
-
-@keyframes gradient {
-	0% {
-		background-position: 0% 50%;
-	}
-	50% {
-		background-position: 100% 50%;
-	}
-	100% {
-		background-position: 0% 50%;
-	}
-}
-
-
-.degradadoY {
-  background: rgb(255,194,87);
-  background: radial-gradient(circle, rgba(255,194,87,1) 0%, rgba(255,117,0,1) 68%, rgb(179, 30, 0) 100%);
-	background-size: 400% 400%;
-	-webkit-animation: gradient 2s ease infinite;
-	        animation: gradient 2s ease infinite;
-}
-
-@-webkit-keyframes gradient {
-	0% {
-		background-position: 0% 50%;
-	}
-	50% {
-		background-position: 100% 50%;
-	}
-	100% {
-		background-position: 0% 50%;
-	}
-}
-
-@keyframes gradient {
-	0% {
-		background-position: 0% 50%;
-	}
-	50% {
-		background-position: 100% 50%;
-	}
-	100% {
-		background-position: 0% 50%;
-	}
-}
-
-
 /* WAITING FOR OPPONENT LOADER */
 .loader {
     width: 48px;
@@ -244,5 +177,45 @@ box-shadow: inset 11px 0px 20px -12px rgba(0,0,0,0.75);
 
 
 
+    .nav{
+      position: absolute;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      gap: 10em;
+      padding: 2vw;
+    }
 
+    .nav-left{
+      display: flex;
+      gap: 0.4em;
+      align-items: center;
+      font-weight: 600;
+    }
+
+    .nav-right{
+      display: flex;
+      gap: 0.4em;
+      align-items: center;
+    }
+
+    .nav-user{
+      font-weight: 400;
+    }
+
+    .nav-logout {
+      background-color: #ea4a3f; /* Color rojo */
+      color: white; /* Texto blanco */
+      padding: 0px 8px 3px 10px; /* Relleno arriba-abajo y izquierda-derecha */
+      border: none; /* Sin bordes */
+      border-radius: 5px; /* Bordes redondeados */
+      box-shadow: rgba(0, 0, 0, 0.34) 0px 0.1em 0.2em;
+      font-size: 1em; /* Tamaño del texto */
+      cursor: pointer; /* Cambia el cursor al pasar el ratón */
+      transition: background-color 0.3s; /* Transición suave al cambiar de color */
+    }
+
+    .nav-logout:hover {
+      background-color: #da190b; /* Color rojo oscuro al pasar el ratón */
+    }
 

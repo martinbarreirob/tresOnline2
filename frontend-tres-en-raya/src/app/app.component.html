@@ -1,6 +1,6 @@
 <!-- app.component.html -->
 <app-logging *ngIf="!isRegistered" (emitRegistered)="setRegistered()"></app-logging>
 
-<app-list-games *ngIf="isRegistered"></app-list-games>
+<app-list-games *ngIf="isRegistered && !isOnGame" (emitEnterGame)="setEnterGame()"></app-list-games>
 
-<!-- <app-game ></app-game> -->
+<app-game *ngIf="isOnGame"></app-game>

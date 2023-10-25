@@ -1,16 +1,28 @@
 //list-games.component.ts
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { SocketService } from '../socket.service'; // Asegúrate de importar tu servicio
 import { HttpClient } from '@angular/common/http';
 import { Player, Game } from '../models/interfaces.model';
 import { Subscription } from 'rxjs';
+import { trigger, transition, style, animate } from '@angular/animations';
+
 
 @Component({
   selector: 'app-list-games',
   templateUrl: './list-games.component.html',
-  styleUrls: ['./list-games.component.css']
+  styleUrls: ['./list-games.component.css'],
+  animations: [
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('600ms', style({ opacity: 1 })),
+      ]),
+    ]),
+  ]
 })
 export class ListGamesComponent implements OnInit, OnDestroy {
+  @Output() emitEnterGame = new EventEmitter<void>();
+
   private disconnectionSubscription: Subscription= new Subscription();
   private baseUrl: string = 'http://192.168.0.42:3000/';
 
@@ -26,18 +38,27 @@ export class ListGamesComponent implements OnInit, OnDestroy {
 
     this.getAllGamesAvaliable();
 
+    this.setupSocketListeners();
   }
 
   ngOnDestroy(): void{
 
   }
 
+  private setupSocketListeners(): void{
+    this.socketService.listen<Game>('create-game').subscribe((newGame: Game) => {
+      this.games.push(newGame as Game)
+    });
+
+    this.socketService.listen<Game>('list-games').subscribe((game: Game) => {
+      this.games = this.games.filter(g => g.id !== game.id);
+    });
+  }
+
   setUser(): void{
     let playerLocalStorage = localStorage.getItem('player');
     if(playerLocalStorage){
       this.user = JSON.parse(playerLocalStorage);
-      console.log(this.user);
-
     }
   }
 
@@ -66,13 +87,22 @@ export class ListGamesComponent implements OnInit, OnDestroy {
       playerOid: "",
       turn: 'X',
     }
-    return this.http.post<Game>(`${this.baseUrl}game/`, gameData);
+    this.http.post<Game>(`${this.baseUrl}game/`, gameData).subscribe((game: Game)=>{
+      this.socketService.emit('create-game', game);
+      this.emitEnterGame.emit();
+    });
   }
 
-  getRandomEmoji(): string {
-    const emojis = ["🎯", "😀", "🎉", "❤️", "🐱", "🍕", "🚀", "🌙", "🍀", "🎈"];
-    const randomIndex = Math.floor(Math.random() * emojis.length);
-    return emojis[randomIndex];
+  joinGame(gameId: number): void{
+    const gameData = {
+      status: 1,
+      playerOid: this.user.id,
+    }
+    this.http.put<Game>(`${this.baseUrl}game/${gameId}`, gameData).subscribe((game: Game) => {
+      this.socketService.emit('player-join-game', game);
+      this.socketService.emit('list-games', game);
+      this.emitEnterGame.emit();
+    })
   }
 }
 

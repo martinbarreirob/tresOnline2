@@ -11,5 +11,6 @@ export interface Game {
 export interface Player {
   id: number;
   nombre: string;
+  socketId: number
 }
 

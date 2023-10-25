@@ -8,7 +8,8 @@ import { SocketService } from './socket.service';
 })
 export class AppComponent implements OnInit {
   title = 'frontend-tres-en-raya';
-  isRegistered = true; //CAMBIAR A FALSE
+  isRegistered: boolean = false; //CAMBIAR A FALSE
+  isOnGame: boolean = false;
 
   constructor(private socketService: SocketService) {}
 
@@ -18,5 +19,9 @@ export class AppComponent implements OnInit {
 
   setRegistered() {
     this.isRegistered = true;
+  }
+
+  setEnterGame() {
+    this.isOnGame = true;
   }
 }

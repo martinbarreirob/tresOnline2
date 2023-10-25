@@ -4,7 +4,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SocketService } from '../socket.service'; // Asegúrate de importar tu servicio
 import { HttpClient } from '@angular/common/http';
 import { Player, Game } from '../models/interfaces.model';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-game',
@@ -20,8 +20,8 @@ export class GameComponent implements OnInit, OnDestroy {
     ['', '', ''],
     ['', '', '']
   ];
-  player: any;
-  game: any;
+  player: any = {};
+  game: any = {};
   opponent: any;
   currentPlayer: any;
   gameOver: boolean = false;
@@ -34,28 +34,7 @@ export class GameComponent implements OnInit, OnDestroy {
   constructor (private http: HttpClient, private socketService: SocketService){}
 
   ngOnInit(): void{
-    let playerLocalStorage = localStorage.getItem('player');
-    if(playerLocalStorage){
-      this.player = JSON.parse(playerLocalStorage);
-    }
 
-    // Carga el juego en funcion del usuario que se acaba de registrar con el local storage
-    this.http.get<Game>(`${this.baseUrl}game/playerGame/${this.player.id}`).subscribe((game)=>{
-      this.game = game;
-      this.board = JSON.parse(game.board);
-
-      //Comprobar si Somos X o O
-      if (this.game.playerXid === this.player.id) {
-        this.currentPlayer = 'X';
-
-      } else if (this.game.playerOid === this.player.id) {
-        this.currentPlayer = 'O';
-
-        this.http.get<Player>(`${this.baseUrl}player/${this.game.playerXid}`).subscribe((playerX) => {
-          this.opponent = playerX;
-       });
-      }
-    });
 
     this.setupSocketListeners();
   }
@@ -64,52 +43,49 @@ export class GameComponent implements OnInit, OnDestroy {
     this.disconnectionSubscription.unsubscribe();
   }
 
+//#######################################################################
+
   private setupSocketListeners(): void {
-    this.socketService.listen('player-connected').subscribe(newPlayer => {
-      this.opponent = newPlayer;
+
+    this.socketService.listen('create-game').subscribe(game => {
+      this.setUpPlayer();
+      console.log(this.player);
     });
 
-    this.socketService.listen('winner-updated').subscribe(game => {
-      this.game = game;
-      this.game.turn = null;
-    });
 
-    this.socketService.listen('game-updated').subscribe(game => {
-      this.game = game;
-      this.board = JSON.parse(this.game.board);
-      this.winner = this.checkWinner();
 
-      //Con esta condición solo lanzo el update winner en el cliente que gana y este emite un evento para que se lance en el otro usuario
-      if( this.winner === 'X' && this.game.playerXid === this.player.id ){
-        this.updateWinner(this.winner);
-
-      }else if(this.winner === 'O' && this.game.playerOid === this.player.id ){
-        this.updateWinner(this.winner);
-
+    this.socketService.listen<Game>('player-join-game').subscribe((game: Game) => {
+      if(!this.player){
+        this.setUpPlayer();
+        this.selectOneUser(game.playerXid).subscribe(player => {
+          this.opponent = player;
+        });
+      } else {
+        this.selectOneUser(game.playerOid).subscribe(player => {
+          this.opponent = player;
+        });
       }
     });
-
-    this.socketService.listen('restart-game').subscribe(game => {
-      this.opponentReadyRestart = true;
-
-      if(this.opponentReadyRestart && this.playerReadyRestart === true){
-        this.restartGame();
-        this.socketService.emit('restart-game', this.player);
-      }
-    });
-
-    this.socketService.listen('player-disconnected').subscribe(game => {
-      this.opponentDisconnected = true;
-    })
-
-
-
-
-
   }
 
 
+
+
+  setUpPlayer(): void{
+    let playerLocalStorage = localStorage.getItem('player');
+    if(playerLocalStorage){
+      this.player = JSON.parse(playerLocalStorage);
+    }
+  }
+
+  selectOneUser(playerId: number): Observable<Player>{
+    return this.http.get<Player>(`${this.baseUrl}player/${playerId}`);
+  }
+
   makeMove(row: number, col: number): void {
+    console.log("move");
+
+
     //Compruebo si hay oponente
     if (!this.opponent) {
         return;

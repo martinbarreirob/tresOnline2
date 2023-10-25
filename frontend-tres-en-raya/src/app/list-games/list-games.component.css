@@ -23,7 +23,7 @@ body {
 .nav{
   display: flex;
   justify-content: space-between;
-  gap: 10em;
+
   padding: 2vw;
 }
 
@@ -45,7 +45,7 @@ body {
 }
 
 .nav-logout {
-  background-color: #f44336; /* Color rojo */
+  background-color: #ea4a3f; /* Color rojo */
   color: white; /* Texto blanco */
   padding: 0px 8px 3px 10px; /* Relleno arriba-abajo y izquierda-derecha */
   border: none; /* Sin bordes */
@@ -82,16 +82,20 @@ p {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #f7f7f7;
+  background-color: #ffffff;
   padding: 20px;
   border-radius: 5px;
   margin-bottom: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0px 10px rgba(0, 0, 0, 0.3);
   transition: transform 0.5s ease 0s;
+  cursor:pointer;
 }
 
 .task:hover{
   transform: scale(0.95);
+}
+hr{
+  background-color: gray;
 }
 
 .task-icon, .task-time {

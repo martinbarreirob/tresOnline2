@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';  // No olvides importar Observable
   providedIn: 'root'
 })
 export class SocketService {
-  private socket: any;
+  public socket: any;
 
   constructor() {
     this.socket = io.connect('http://192.168.0.42:3000'); // Asume que tu servidor backend corre en el puerto 3000
@@ -20,7 +20,7 @@ export class SocketService {
   }
 
   // Método para escuchar eventos desde el servidor
-  listen(eventName: string) {
+  listen<T>(eventName: string): Observable<T> {
     return new Observable((subscriber) => {
       this.socket.on(eventName, (data:any) => {
         subscriber.next(data);

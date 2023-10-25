@@ -1,10 +1,25 @@
+<div class="nav">
+  <div class="nav-left">
+    Tres En Raya
+  </div>
+  <div class="nav-right">
+    <span class="nav-user">Martin</span>
+    <span class="nav-logout">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
+        <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+      </svg>
+    </span>
+  </div>
+</div>
+
 <!-- PANTALLA WAITING FOR OPPONENT -->
-<div class="waiting text-center" *ngIf="(((currentPlayer !== game?.turn || !opponent ) && gameOver != true) || playerReadyRestart)">
+<!-- <div class="waiting text-center" *ngIf="(((currentPlayer !== game?.turn || !opponent ) && gameOver != true) || playerReadyRestart)">
     <div>
       <p>Waiting For Opponent</p>
     </div>
     <span class="loader"></span>
-</div>
+</div> -->
 
 <!-- ALERTA DE VICTORIA -->
 <div class="alert" *ngIf="gameOver === true">
@@ -27,9 +42,9 @@
 
 
 <!-- LOGICA DEL JUEGO -->
-<div class="game-container">
+<div class="game-container" >
   <!-- PLAYER X -->
-  <div class="player-section bg-blue d-flex justify-content-center" [ngClass]="{'degradadoX': game?.turn === 'X' || gameOver === true}">
+  <!-- <div class="player-section bg-blue d-flex justify-content-center" [ngClass]="{'degradadoX': game?.turn === 'X' || gameOver === true}">
     <div class="text-center mt-5" *ngIf="currentPlayer === 'X'">
       <div class="playerName">{{ player.nombre }}</div>
       <div class="playerName">{{ game.winX }}</div>
@@ -39,10 +54,20 @@
       <div class="playerName">{{ opponent?.nombre }}</div>
       <div class="playerName">{{ game.winX }}</div>
     </div>
+  </div> -->
+
+
+  <div class="player-section bg-blue d-flex justify-content-center" *ngIf="player?.id === game?.playerXid">
+    <div class="text-end mt-5">
+      <div class="player-points">1</div>
+      <div class="player-name">Martin</div>
+      <div class="player-turn">TU TURNO</div>
+    </div>
   </div>
 
+  <div class="divisor"></div>
   <!-- PLAYER O -->
-  <div class="player-section bg-purple d-flex justify-content-center" [ngClass]="{'degradadoY': game?.turn === 'O' || gameOver === true}">
+  <!-- <div class="player-section bg-purple d-flex justify-content-center">
     <div  class="text-center mt-5" *ngIf="currentPlayer === 'O'">
         <div class="playerName">{{ player.nombre }}</div>
         <div class="playerName">{{ game.winO }}</div>
@@ -51,6 +76,13 @@
     <div  class="text-center mt-5" *ngIf="currentPlayer === 'X' && opponent != null">
         <div class="playerName">{{ opponent?.nombre }}</div>
         <div class="playerName">{{ game.winO }}</div>
+    </div>
+  </div> -->
+  <div class="player-section bg-purple d-flex justify-content-center">
+    <div  class="text-start mt-5">
+      <div class="player-points">2</div>
+        <div class="player-name">Carlos</div>
+        <div class="player-turn">TU TURNO</div>
     </div>
   </div>
 

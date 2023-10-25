@@ -1,4 +1,3 @@
-// logging.components.ts
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Player, Game } from '../models/interfaces.model';
@@ -17,10 +16,15 @@ export class LoggingComponent implements OnInit{
   private socket: any;
 
   constructor (private http: HttpClient, private socketService: SocketService){
-    this.socket = this.socketService;
   }
 
   ngOnInit(): void {
+
+  // Escuchar el evento de conexión del socket
+  this.socketService.socket.on('connect', () => {
+  });
+
+
   }
 
   registroUser(): void {
@@ -28,15 +32,21 @@ export class LoggingComponent implements OnInit{
       this.inputNombre = 'user';
     }
 
-    this.insertPlayer(this.inputNombre).subscribe((player: Player) => {
+    // Obtenemos el ID del socket
+    const socketId = this.socketService.socket.id;
+
+    // Insertamos el jugador con el ID del socket
+    this.insertPlayer(this.inputNombre, socketId).subscribe((player: Player) => {
       localStorage.setItem('player', JSON.stringify(player));
       this.emitRegistered.emit();
-
     });
   }
 
-  insertPlayer(nombre: string) {
-    const nombrePlayer = { nombre: nombre};
-    return this.http.post<Player>(`${this.baseUrl}player/`, nombrePlayer);
+  insertPlayer(nombre: string, socketId: string) {
+    const playerData = {
+      nombre: nombre,
+      socketId: socketId  // Enviamos el ID del socket al servidor
+    };
+    return this.http.post<Player>(`${this.baseUrl}player/`, playerData);
   }
 }
