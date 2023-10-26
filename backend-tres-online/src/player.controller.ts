@@ -19,7 +19,7 @@ export class PlayerController {
   }
 
   @Post()
-  create(@Body() playerData: { nombre: string }): Promise<Player> {
+  create(@Body() playerData: { nombre: string, socketId: number }): Promise<Player> {
     return this.playerService.create(playerData);
   }
 

@@ -158,7 +158,7 @@ export class GameComponent implements OnInit, OnDestroy {
     this.updateBoard(boardString, nextTurn);
   }
 
-  checkWinner(): string | null {  //PROBANDO TODAVÍA FALTA AÑADIR FUNCION UPDATEWINNER
+  checkWinner(): string | null {
     // Comprobar filas, columnas y diagonales
     const winningCombinations = [
         // Filas

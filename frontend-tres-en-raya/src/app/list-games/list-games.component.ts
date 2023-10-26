@@ -28,7 +28,7 @@ export class ListGamesComponent implements OnInit, OnDestroy {
 
   games: Array<Game> = [];
   players: Array<Player> = [];
-  user: any;
+  user: any = "";
 
 
   constructor (private http: HttpClient, private socketService: SocketService){}
@@ -46,7 +46,11 @@ export class ListGamesComponent implements OnInit, OnDestroy {
   }
 
   private setupSocketListeners(): void{
+    //Escucha cuando se creó un juego 
     this.socketService.listen<Game>('create-game').subscribe((newGame: Game) => {
+      this.http.get<Player>(`${this.baseUrl}player/${newGame.playerXid}`).subscribe((namePlayer: Player)=>{
+        newGame.playerXname = namePlayer.nombre;
+      })
       this.games.push(newGame as Game)
     });
 
@@ -88,6 +92,8 @@ export class ListGamesComponent implements OnInit, OnDestroy {
       turn: 'X',
     }
     this.http.post<Game>(`${this.baseUrl}game/`, gameData).subscribe((game: Game)=>{
+      console.log('create-game', game);
+
       this.socketService.emit('create-game', game);
       this.emitEnterGame.emit();
     });

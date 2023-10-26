@@ -182,7 +182,7 @@
       width: 100%;
       display: flex;
       justify-content: space-between;
-      gap: 10em;
+
       padding: 2vw;
     }
 
@@ -218,4 +218,3 @@
     .nav-logout:hover {
       background-color: #da190b; /* Color rojo oscuro al pasar el ratón */
     }
-

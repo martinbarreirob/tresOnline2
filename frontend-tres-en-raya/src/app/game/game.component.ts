@@ -12,7 +12,7 @@ import { Observable, Subscription } from 'rxjs';
   styleUrls: ['./game.component.css']
 })
 export class GameComponent implements OnInit, OnDestroy {
-  private disconnectionSubscription: Subscription= new Subscription();
+  private disconnectionSubscription: Subscription = new Subscription();
   private baseUrl: string = 'http://192.168.0.42:3000/';
 
   board: string[][] = [
@@ -20,103 +20,115 @@ export class GameComponent implements OnInit, OnDestroy {
     ['', '', ''],
     ['', '', '']
   ];
-  player: any = {};
+  player: Player | null = null;
+  user: any = "";
   game: any = {};
   opponent: any;
-  currentPlayer: any;
+  playingFor: any;
   gameOver: boolean = false;
   winner: string | null = null;
+  mensajesResultado: Array<String> = ['DRAW', 'YOU WIN', 'YOU LOSE']
   playerReadyRestart: boolean = false;
   opponentReadyRestart: boolean = false;
   opponentDisconnected: boolean = false;
 
 
-  constructor (private http: HttpClient, private socketService: SocketService){}
+  constructor(private http: HttpClient, private socketService: SocketService) { }
 
-  ngOnInit(): void{
-
+  ngOnInit(): void {
+    this.setUser();
 
     this.setupSocketListeners();
   }
 
-  ngOnDestroy(): void{
+  ngOnDestroy(): void {
     this.disconnectionSubscription.unsubscribe();
   }
 
-//#######################################################################
+  //#######################################################################
 
   private setupSocketListeners(): void {
 
-    this.socketService.listen('create-game').subscribe(game => {
-      this.setUpPlayer();
-      console.log(this.player);
+    this.socketService.listen<Game>('create-game').subscribe((game: Game) => {
+      this.http.get<Game>(`${this.baseUrl}game/${game.id}`).subscribe((game: Game) => {
+        this.game = game;
+
+        this.setUpPlayer();
+      });
+
     });
 
 
 
     this.socketService.listen<Game>('player-join-game').subscribe((game: Game) => {
-      if(!this.player){
-        this.setUpPlayer();
-        this.selectOneUser(game.playerXid).subscribe(player => {
-          this.opponent = player;
+      //Si no está establecido player. Salta si el componente no viene del listen create-game
+      if (this.player === null) {
+        this.http.get<Game>(`${this.baseUrl}game/${game.id}`).subscribe((game: Game) => {
+          this.game = game;
+          //Carga la variable player con el localstorage
+          this.setUpPlayer();
+          //Carga en el oponente el playerX
+          this.selectOneUser(game.playerXid).subscribe((player: Player) => {
+            this.opponent = player;
+          });
         });
       } else {
-        this.selectOneUser(game.playerOid).subscribe(player => {
+        this.selectOneUser(game.playerOid).subscribe((player: Player) => {
           this.opponent = player;
         });
       }
     });
+
+    this.socketService.listen<Game>('updated-game').subscribe((game: Game) => {
+      console.log('se actualizó');
+      this.game = game;
+      this.board = JSON.parse(this.game.board);
+
+
+
+
+    })
   }
 
-
-
-
-  setUpPlayer(): void{
+  setUser(): void {
     let playerLocalStorage = localStorage.getItem('player');
-    if(playerLocalStorage){
-      this.player = JSON.parse(playerLocalStorage);
+    if (playerLocalStorage) {
+      this.user = JSON.parse(playerLocalStorage);
     }
   }
 
-  selectOneUser(playerId: number): Observable<Player>{
+
+  setUpPlayer(): void {
+    let playerLocalStorage = localStorage.getItem('player');
+    if (playerLocalStorage) {
+      this.player = JSON.parse(playerLocalStorage);
+    }
+    this.playingFor = this.game.playerXid === this.player?.id ? 'X' : 'O';
+  }
+
+  selectOneUser(playerId: number): Observable<Player> {
     return this.http.get<Player>(`${this.baseUrl}player/${playerId}`);
   }
 
   makeMove(row: number, col: number): void {
-    console.log("move");
-
-
     //Compruebo si hay oponente
     if (!this.opponent) {
-        return;
+      return;
     }
-
     //Compruebo si el juego está terminado
     if (this.gameOver) {
       return;
     }
-
     //Compruebo si la celda está vacia
     if (this.board[row][col] !== '') {
-        return;
-    }
-
-    //Compruebo si es mi turno sindo X
-    if (this.game.turn === 'O' && this.game.playerXid === this.player.id) {
       return;
     }
-
-    //Compruebo si es mi turno sindo O
-    if (this.game.turn === 'X' && this.game.playerOid === this.player.id) {
+    //Compruebo si es mi turno sindo X.
+    if (this.game.turn !== this.playingFor) {
       return;
     }
-
-    if (this.game.turn === 'X' && this.game.playerXid === this.player.id) {
-        this.board[row][col] = 'X';
-    }
-    else if (this.game.turn === 'O' && this.game.playerOid === this.player.id) {
-        this.board[row][col] = 'O';
-    }
+    //Rellena la posicion en la tabla con nuestra ficha.
+    this.board[row][col] = this.playingFor;
 
     //Actualización del tablero
     let boardString = JSON.stringify(this.board);
@@ -127,76 +139,76 @@ export class GameComponent implements OnInit, OnDestroy {
   checkWinner(): string | null {  //PROBANDO TODAVÍA FALTA AÑADIR FUNCION UPDATEWINNER
     // Comprobar filas, columnas y diagonales
     const winningCombinations = [
-        // Filas
-        [this.board[0][0], this.board[0][1], this.board[0][2]],
-        [this.board[1][0], this.board[1][1], this.board[1][2]],
-        [this.board[2][0], this.board[2][1], this.board[2][2]],
-        // Columnas
-        [this.board[0][0], this.board[1][0], this.board[2][0]],
-        [this.board[0][1], this.board[1][1], this.board[2][1]],
-        [this.board[0][2], this.board[1][2], this.board[2][2]],
-        // Diagonales
-        [this.board[0][0], this.board[1][1], this.board[2][2]],
-        [this.board[0][2], this.board[1][1], this.board[2][0]]
+      // Filas
+      [this.board[0][0], this.board[0][1], this.board[0][2]],
+      [this.board[1][0], this.board[1][1], this.board[1][2]],
+      [this.board[2][0], this.board[2][1], this.board[2][2]],
+      // Columnas
+      [this.board[0][0], this.board[1][0], this.board[2][0]],
+      [this.board[0][1], this.board[1][1], this.board[2][1]],
+      [this.board[0][2], this.board[1][2], this.board[2][2]],
+      // Diagonales
+      [this.board[0][0], this.board[1][1], this.board[2][2]],
+      [this.board[0][2], this.board[1][1], this.board[2][0]]
     ];
 
     for (let combination of winningCombinations) {
       if (combination[0] && combination[0] === combination[1] && combination[1] === combination[2]) {
-          this.gameOver = true;
-          return combination[0]
+        this.gameOver = true;
+        return combination[0]
       }
     }
 
     // Comprobar empate
     const isDraw = this.board.flat().every(cell => cell !== '');
     if (isDraw) {
-        this.gameOver = true;
+      this.gameOver = true;
     }
 
     return null;
   }
 
-  updateWinner(winner: string) {
+  updateWinner(winner: string): void {
     let gameData: any;
 
-    if(winner === 'X'){
+    if (winner === 'X') {
       gameData = {
         winX: ++this.game.winX
       }
-    }else if(winner === 'O'){
+    } else if (winner === 'O') {
       gameData = {
         winO: ++this.game.winO
       }
     }
 
-    this.http.put<Game>(`${this.baseUrl}game/${this.game.id}`, gameData).subscribe((game)=>{
+    this.http.put<Game>(`${this.baseUrl}game/${this.game.id}`, gameData).subscribe((game) => {
       this.socketService.emit('winner-updated', game);
     });
   }
 
   updateBoard(board: string, turn: string) {
     const gameData = {
-        board: board,
-        turn: turn,
+      board: board,
+      turn: turn,
     }
 
     this.http.put<Game>(`${this.baseUrl}game/${this.game.id}`, gameData).subscribe(
-        updateGame => {
-            this.socketService.emit("game-updated", updateGame);
-        },
-        error => {
-            console.error('Error al actualizar el juego:', error);
-        }
+      updateGame => {
+        this.socketService.emit("updated-game", updateGame);
+      },
+      error => {
+        console.error('Error al actualizar el juego:', error);
+      }
     );
   }
 
-  emitRestartGame(){
+  emitRestartGame() {
     this.playerReadyRestart = true;
     this.socketService.emit('restart-game', this.player)
   }
 
 
-  restartGame(){
+  restartGame() {
     let tableroLimpio = [
       ['', '', ''],
       ['', '', ''],

@@ -33,7 +33,7 @@ export class LoggingComponent implements OnInit{
     }
 
     // Obtenemos el ID del socket
-    const socketId = this.socketService.socket.id;
+    const socketId = this.socketService.socket.id; //todo Revisar
 
     // Insertamos el jugador con el ID del socket
     this.insertPlayer(this.inputNombre, socketId).subscribe((player: Player) => {
