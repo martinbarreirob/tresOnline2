@@ -60,8 +60,6 @@ export class ListGamesComponent implements OnInit, OnDestroy {
   }
 
   setUser(): void{
-
-
     let playerLocalStorage = localStorage.getItem('player');
     console.log(playerLocalStorage);
     if(playerLocalStorage){

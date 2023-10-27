@@ -58,9 +58,7 @@ export class GameComponent implements OnInit, OnDestroy {
         this.game = game;
         this.setUpPlayer();
       });
-
     });
-
 
 
     this.socketService.listen<Game>('player-join-game').subscribe((game: Game) => {
