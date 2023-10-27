@@ -46,7 +46,7 @@ export class ListGamesComponent implements OnInit, OnDestroy {
   }
 
   private setupSocketListeners(): void{
-    //Escucha cuando se creó un juego 
+    //Escucha cuando se creó un juego
     this.socketService.listen<Game>('create-game').subscribe((newGame: Game) => {
       this.http.get<Player>(`${this.baseUrl}player/${newGame.playerXid}`).subscribe((namePlayer: Player)=>{
         newGame.playerXname = namePlayer.nombre;
@@ -60,7 +60,10 @@ export class ListGamesComponent implements OnInit, OnDestroy {
   }
 
   setUser(): void{
+
+
     let playerLocalStorage = localStorage.getItem('player');
+    console.log(playerLocalStorage);
     if(playerLocalStorage){
       this.user = JSON.parse(playerLocalStorage);
     }
@@ -92,7 +95,6 @@ export class ListGamesComponent implements OnInit, OnDestroy {
       turn: 'X',
     }
     this.http.post<Game>(`${this.baseUrl}game/`, gameData).subscribe((game: Game)=>{
-      console.log('create-game', game);
 
       this.socketService.emit('create-game', game);
       this.emitEnterGame.emit();

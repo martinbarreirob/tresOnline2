@@ -119,17 +119,14 @@ export class GameComponent implements OnInit, OnDestroy {
   makeMove(row: number, col: number): void {
     console.log("move");
 
-
     //Compruebo si hay oponente
     if (!this.opponent) {
         return;
     }
-
     //Compruebo si el juego está terminado
     if (this.gameOver) {
       return;
     }
-
     //Compruebo si la celda está vacia
     if (this.board[row][col] !== '') {
         return;

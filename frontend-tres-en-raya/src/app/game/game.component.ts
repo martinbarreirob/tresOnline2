@@ -27,13 +27,17 @@ export class GameComponent implements OnInit, OnDestroy {
   playingFor: any;
   gameOver: boolean = false;
   winner: string | null = null;
-  mensajesResultado: Array<String> = ['DRAW', 'YOU WIN', 'YOU LOSE']
+  mensajesResultado: Array<string> = ['YOU WIN', 'YOU LOSE', 'DRAW']
+  resultado: string = "";
   playerReadyRestart: boolean = false;
   opponentReadyRestart: boolean = false;
   opponentDisconnected: boolean = false;
 
 
-  constructor(private http: HttpClient, private socketService: SocketService) { }
+  constructor(private http: HttpClient, private socketService: SocketService) {
+    this.playerReadyRestart = false;
+    this.opponentReadyRestart = false;
+  }
 
   ngOnInit(): void {
     this.setUser();
@@ -52,7 +56,6 @@ export class GameComponent implements OnInit, OnDestroy {
     this.socketService.listen<Game>('create-game').subscribe((game: Game) => {
       this.http.get<Game>(`${this.baseUrl}game/${game.id}`).subscribe((game: Game) => {
         this.game = game;
-
         this.setUpPlayer();
       });
 
@@ -84,11 +87,46 @@ export class GameComponent implements OnInit, OnDestroy {
       this.game = game;
       this.board = JSON.parse(this.game.board);
 
+      //Comprobación de si ha habido un ganador
+      this.winner = this.checkWinner();
+      if (this.winner) {
+        this.updateWinner(this.winner);
+      }
+    });
 
+    //Cuando alguien gana recibe el evento para actualizar mesa y contadores
+    this.socketService.listen<Game>('updated-winner-game').subscribe((game: Game) => {
+      this.game = game;
+      this.resultado = this.winnerMessage(this.winner);
+    });
 
+    this.socketService.listen<Game>('ready-restart-game').subscribe((game: Game) => {
+      this.opponentReadyRestart = true;
 
-    })
+      if (this.playerReadyRestart && this.opponentReadyRestart === true) {
+        this.socketService.emit('restart-game', game);
+      }
+    });
+
+    this.socketService.listen<Game>('restart-game').subscribe((game: Game) => {
+      console.log('restart');
+
+      this.restartGame();
+    });
   }
+
+
+  winnerMessage(winner: string | null): string {
+    if(winner === null){
+      return this.mensajesResultado[2];
+    }
+    if(winner === this.playingFor){
+      return this.mensajesResultado[0];
+    }else{
+      return this.mensajesResultado[1];
+    }
+  }
+
 
   setUser(): void {
     let playerLocalStorage = localStorage.getItem('player');
@@ -112,21 +150,31 @@ export class GameComponent implements OnInit, OnDestroy {
 
   makeMove(row: number, col: number): void {
     //Compruebo si hay oponente
+    console.log('0');
+
     if (!this.opponent) {
       return;
     }
+
+    console.log('1');
     //Compruebo si el juego está terminado
     if (this.gameOver) {
       return;
     }
+
+    console.log('2');
     //Compruebo si la celda está vacia
     if (this.board[row][col] !== '') {
       return;
     }
+
+    console.log('3');
     //Compruebo si es mi turno sindo X.
     if (this.game.turn !== this.playingFor) {
       return;
     }
+
+    console.log('4');
     //Rellena la posicion en la tabla con nuestra ficha.
     this.board[row][col] = this.playingFor;
 
@@ -182,7 +230,7 @@ export class GameComponent implements OnInit, OnDestroy {
     }
 
     this.http.put<Game>(`${this.baseUrl}game/${this.game.id}`, gameData).subscribe((game) => {
-      this.socketService.emit('winner-updated', game);
+      this.socketService.emit('updated-winner-game', game);
     });
   }
 
@@ -204,7 +252,9 @@ export class GameComponent implements OnInit, OnDestroy {
 
   emitRestartGame() {
     this.playerReadyRestart = true;
-    this.socketService.emit('restart-game', this.player)
+
+
+    this.socketService.emit('ready-restart-game', this.game)
   }
 
 
