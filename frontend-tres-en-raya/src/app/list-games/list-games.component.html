@@ -18,7 +18,7 @@
     <hr>
     <div class="task" *ngFor="let game of games" [@fadeIn] (click)="joinGame(game.id, user.id)">
         <span class="task-icon"></span>
-        <span class="task-description"><span class="task-title">{{game.playerXname}} #{{game.id}}</span><br>Pulsa para empezar!</span>
+        <span class="task-description"><span class="task-title">{{game.playerXname}} #{{game.playerXid}}</span><br>Pulsa para empezar!</span>
         <span class="arrow">></span>
       </div>
   </div>

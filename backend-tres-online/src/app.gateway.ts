@@ -51,25 +51,33 @@ export class AppGateway {
 
   @SubscribeMessage('updated-game')
   handleGameUpdated(client: Socket, data: any) {
-    console.log('Mesa de juego actualizada:', data);
+    console.log('Mesa de juego actualizada:', );
     this.server.to(data.id).emit('updated-game', data);
+  }
+
+  @SubscribeMessage('updated-winner-game')
+  handleGameWinnerUpdate(client: Socket, payload: any): void {
+    console.log(`${payload} win the game ${payload.id}`);
+    this.server.to(payload.id).emit('updated-winner-game', payload);
+  }
+
+  @SubscribeMessage('ready-restart-game')
+  handleReadyRestartGame(client: Socket, payload: any): void {
+    console.log(`${client.id} ready restart game ${payload.id}`);
+
+    client.broadcast.to(payload.id).emit('ready-restart-game', payload);
   }
 
   @SubscribeMessage('restart-game')
   handleRestartGame(client: Socket, payload: any): void {
-    console.log(`${payload.playerName} restart game ${payload}`);
+    console.log(`${payload.playerName} restart game ${payload.id}`);
 
-    
-    client.broadcast.emit('restart-game', payload);
+    this.server.to(payload.id).emit('restart-game', payload);
   }
 
-  @SubscribeMessage('player-disconnected')
-  handleDisconnect(client: Socket) {
-    // console.log('Client disconnected:', client.id);
-    // Aquí puedes emitir un evento para informar a otros clientes sobre la desconexión
-    this.server.emit('player-disconnected', { playerId: client.id });
+  @SubscribeMessage('disconnect')
+  handleClientDisconnected(client: Socket, payload: any): void {
+      console.log('Client disconnected:', payload.id);
+      this.server.emit('player-disconnected', payload);
   }
-
-  
-
 }

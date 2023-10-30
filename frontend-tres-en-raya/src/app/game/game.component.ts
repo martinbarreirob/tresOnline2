@@ -45,7 +45,11 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    console.log('destroy');
+
+    this.socketService.emit('disconnect', this.game);
     this.disconnectionSubscription.unsubscribe();
+
   }
 
   //#######################################################################
@@ -58,7 +62,6 @@ export class GameComponent implements OnInit, OnDestroy {
         this.setUpPlayer();
       });
     });
-
 
     this.socketService.listen<Game>('player-join-game').subscribe((game: Game) => {
       //Si no está establecido player. Salta si el componente no viene del listen create-game
@@ -92,6 +95,8 @@ export class GameComponent implements OnInit, OnDestroy {
 
     //Cuando alguien gana recibe el evento para actualizar mesa y contadores
     this.socketService.listen<Game>('updated-winner-game').subscribe((game: Game) => {
+      console.log('aaaaaa');
+
       this.game = game;
       this.resultado = this.winnerMessage(this.winner);
     });
@@ -104,11 +109,24 @@ export class GameComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.socketService.listen<Game>('restart-game').subscribe((game: Game) => {
-      console.log('restart');
+    this.socketService.listen<Game>('ready-restart-game').subscribe((game: Game) => {
+      this.opponentReadyRestart = true;
 
+      if (this.playerReadyRestart && this.opponentReadyRestart === true) {
+        this.socketService.emit('restart-game', game);
+      }
+    });
+
+    this.socketService.listen('restart-game').subscribe(() => {
       this.restartGame();
     });
+
+
+    this.socketService.listen('player-disconnected').subscribe(()=>{
+      console.log('disconnected');
+
+      this.opponentDisconnected = true;
+    })
   }
 
   setUpPlayer(): void {
@@ -203,6 +221,8 @@ export class GameComponent implements OnInit, OnDestroy {
     }
 
     this.http.put<Game>(`${this.baseUrl}game/${this.game.id}`, gameData).subscribe((game) => {
+      console.log('va a updated');
+
       this.socketService.emit('updated-winner-game', game);
     });
   }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SocketService } from './socket.service';
 
 @Component({
@@ -11,10 +11,14 @@ export class AppComponent implements OnInit {
   isRegistered: boolean = false; //CAMBIAR A FALSE
   isOnGame: boolean = false;
 
-  constructor(private socketService: SocketService) {}
+  constructor(private socketService: SocketService) { }
 
   ngOnInit(): void {
 
+  }
+
+  ngOnDestroy(): void {
+    this.socketService.emit('player-disconnected', "");
   }
 
   setRegistered() {

@@ -1,17 +1,17 @@
 <!-- PANTALLA WAITING FOR OPPONENT -->
-<!-- <div class="waiting text-center" *ngIf="(((currentPlayer !== game?.turn || !opponent ) && gameOver != true) || playerReadyRestart)">
+<div class="waiting text-center" *ngIf="(((playingFor !== game?.turn || !opponent ) && gameOver != true) || playerReadyRestart)">
     <div>
       <p>Waiting For Opponent</p>
     </div>
     <span class="loader"></span>
-</div> -->
+</div>
 
 
 
 <!-- ALERTA DE VICTORIA -->
-<div class="alert" *ngIf="gameOver === true">
-  <div type="button" (click)="emitRestartGame()" class="alert-win text-center">
-    <div class="alert-msg" *ngIf="gameOver">{{ resultado }}</div>
+<div class="alert" *ngIf="gameOver === true && opponentDisconnected === false" (click)="emitRestartGame()">
+  <div type="button" class="alert-win text-center">
+    <div class="alert-msg" >{{ resultado }}</div>
     <div class="alert-span">Click for Restart</div>
 
   </div>
@@ -27,6 +27,7 @@
 </div>
 
 <app-header></app-header>
+
 
 <!-- LOGICA DEL JUEGO -->
 <div class="game-container" >
