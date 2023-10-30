@@ -1,0 +1,41 @@
+.nav{
+  position: absolute;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+
+  padding: 2vw;
+}
+
+.nav-left{
+  display: flex;
+  gap: 0.4em;
+  align-items: center;
+  font-weight: 600;
+}
+
+.nav-right{
+  display: flex;
+  gap: 0.4em;
+  align-items: center;
+}
+
+.nav-user{
+  font-weight: 400;
+}
+
+.nav-logout {
+  background-color: #ea4a3f; /* Color rojo */
+  color: white; /* Texto blanco */
+  padding: 0px 8px 3px 10px; /* Relleno arriba-abajo y izquierda-derecha */
+  border: none; /* Sin bordes */
+  border-radius: 5px; /* Bordes redondeados */
+  box-shadow: rgba(0, 0, 0, 0.34) 0px 0.1em 0.2em;
+  font-size: 1em; /* Tamaño del texto */
+  cursor: pointer; /* Cambia el cursor al pasar el ratón */
+  transition: background-color 0.3s; /* Transición suave al cambiar de color */
+}
+
+.nav-logout:hover {
+  background-color: #da190b; /* Color rojo oscuro al pasar el ratón */
+}
