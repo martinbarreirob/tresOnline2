@@ -4,7 +4,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SocketService } from '../socket.service'; // Asegúrate de importar tu servicio
 import { HttpClient } from '@angular/common/http';
 import { Player, Game } from '../models/interfaces.model';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, first } from 'rxjs';
+import { PlayerService } from '../player.service';
 
 @Component({
   selector: 'app-game',
@@ -34,14 +35,12 @@ export class GameComponent implements OnInit, OnDestroy {
   opponentDisconnected: boolean = false;
 
 
-  constructor(private http: HttpClient, private socketService: SocketService) {
+  constructor(private http: HttpClient, private socketService: SocketService, private playerService: PlayerService) {
     this.playerReadyRestart = false;
     this.opponentReadyRestart = false;
   }
 
   ngOnInit(): void {
-    this.setUser();
-
     this.setupSocketListeners();
   }
 
@@ -53,14 +52,12 @@ export class GameComponent implements OnInit, OnDestroy {
 
   private setupSocketListeners(): void {
 
-    this.socketService.listen<Game>('create-game').subscribe((game: Game) => {
+    this.socketService.listen<Game>('create-game').pipe(first()).subscribe((game: Game) => {
       this.http.get<Game>(`${this.baseUrl}game/${game.id}`).subscribe((game: Game) => {
         this.game = game;
         this.setUpPlayer();
       });
-
     });
-
 
 
     this.socketService.listen<Game>('player-join-game').subscribe((game: Game) => {
@@ -71,19 +68,18 @@ export class GameComponent implements OnInit, OnDestroy {
           //Carga la variable player con el localstorage
           this.setUpPlayer();
           //Carga en el oponente el playerX
-          this.selectOneUser(game.playerXid).subscribe((player: Player) => {
-            this.opponent = player;
+          this.selectOneUser(game.playerXid).subscribe((opponent: Player) => {
+            this.opponent = opponent;
           });
         });
       } else {
-        this.selectOneUser(game.playerOid).subscribe((player: Player) => {
-          this.opponent = player;
+        this.selectOneUser(game.playerOid).subscribe((opponent: Player) => {
+          this.opponent = opponent;
         });
       }
     });
 
     this.socketService.listen<Game>('updated-game').subscribe((game: Game) => {
-      console.log('se actualizó');
       this.game = game;
       this.board = JSON.parse(this.game.board);
 
@@ -115,33 +111,20 @@ export class GameComponent implements OnInit, OnDestroy {
     });
   }
 
+  setUpPlayer(): void {
+    this.player = this.playerService.getCurrentPlayer();
+    this.playingFor = this.game.playerXid === this.player?.id ? 'X' : 'O';
+  }
 
   winnerMessage(winner: string | null): string {
-    if(winner === null){
+    if (winner === null) {
       return this.mensajesResultado[2];
     }
-    if(winner === this.playingFor){
+    if (winner === this.playingFor) {
       return this.mensajesResultado[0];
-    }else{
+    } else {
       return this.mensajesResultado[1];
     }
-  }
-
-
-  setUser(): void {
-    let playerLocalStorage = localStorage.getItem('player');
-    if (playerLocalStorage) {
-      this.user = JSON.parse(playerLocalStorage);
-    }
-  }
-
-
-  setUpPlayer(): void {
-    let playerLocalStorage = localStorage.getItem('player');
-    if (playerLocalStorage) {
-      this.player = JSON.parse(playerLocalStorage);
-    }
-    this.playingFor = this.game.playerXid === this.player?.id ? 'X' : 'O';
   }
 
   selectOneUser(playerId: number): Observable<Player> {
@@ -150,31 +133,21 @@ export class GameComponent implements OnInit, OnDestroy {
 
   makeMove(row: number, col: number): void {
     //Compruebo si hay oponente
-    console.log('0');
-
     if (!this.opponent) {
       return;
     }
-
-    console.log('1');
     //Compruebo si el juego está terminado
     if (this.gameOver) {
       return;
     }
-
-    console.log('2');
     //Compruebo si la celda está vacia
     if (this.board[row][col] !== '') {
       return;
     }
-
-    console.log('3');
     //Compruebo si es mi turno sindo X.
     if (this.game.turn !== this.playingFor) {
       return;
     }
-
-    console.log('4');
     //Rellena la posicion en la tabla con nuestra ficha.
     this.board[row][col] = this.playingFor;
 
@@ -184,7 +157,7 @@ export class GameComponent implements OnInit, OnDestroy {
     this.updateBoard(boardString, nextTurn);
   }
 
-  checkWinner(): string | null {  //PROBANDO TODAVÍA FALTA AÑADIR FUNCION UPDATEWINNER
+  checkWinner(): string | null {
     // Comprobar filas, columnas y diagonales
     const winningCombinations = [
       // Filas
@@ -253,10 +226,8 @@ export class GameComponent implements OnInit, OnDestroy {
   emitRestartGame() {
     this.playerReadyRestart = true;
 
-
     this.socketService.emit('ready-restart-game', this.game)
   }
-
 
   restartGame() {
     let tableroLimpio = [

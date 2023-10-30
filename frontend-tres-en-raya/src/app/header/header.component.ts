@@ -17,6 +17,4 @@ export class HeaderComponent {
 
     location.reload();
   }
-
-  @Input() userLogged: Player | undefined;
 }

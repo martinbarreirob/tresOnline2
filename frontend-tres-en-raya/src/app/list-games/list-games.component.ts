@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { Player, Game } from '../models/interfaces.model';
 import { Subscription } from 'rxjs';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { PlayerService } from '../player.service';
 
 
 @Component({
@@ -28,13 +29,14 @@ export class ListGamesComponent implements OnInit, OnDestroy {
 
   games: Array<Game> = [];
   players: Array<Player> = [];
-  user: any = "";
+  user: any;
   userLogged: Player | undefined;
 
 
-  constructor(private http: HttpClient, private socketService: SocketService) { }
+  constructor(private http: HttpClient, private socketService: SocketService, private playerService: PlayerService) { }
 
   ngOnInit(): void {
+    this.user = this.playerService.getCurrentPlayer();
 
     this.getAllGamesAvaliable();
 
@@ -94,7 +96,7 @@ export class ListGamesComponent implements OnInit, OnDestroy {
     });
   }
 
-  joinGame(gameId: number): void {
+  joinGame(gameId: number, userId: number): void {
     const gameData = {
       status: 1,
       playerOid: this.user.id,
