@@ -1,7 +1,8 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Player, Game } from '../models/interfaces.model';
 import { SocketService } from '../socket.service';
+import { PlayerService } from '../player.service';
 
 @Component({
   selector: 'app-logging',
@@ -15,13 +16,12 @@ export class LoggingComponent implements OnInit{
   public inputNombre: string = '';
   private socket: any;
 
-  constructor (private http: HttpClient, private socketService: SocketService){
+  constructor (private http: HttpClient, private socketService: SocketService, private playerService: PlayerService){
   }
 
   ngOnInit(): void {
-
-  // Escuchar el evento de conexión del socket
-  this.socketService.socket.on('connect', () => {
+    // Escuchar el evento de conexión del socket
+    this.socketService.socket.on('connect', () => {
   });
 
 
@@ -37,7 +37,8 @@ export class LoggingComponent implements OnInit{
 
     // Insertamos el jugador con el ID del socket
     this.insertPlayer(this.inputNombre, socketId).subscribe((player: Player) => {
-      localStorage.setItem('player', JSON.stringify(player));
+
+      this.playerService.setCurrentPlayer(player);
       this.emitRegistered.emit();
     });
   }

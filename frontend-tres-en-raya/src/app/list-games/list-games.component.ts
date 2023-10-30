@@ -23,17 +23,18 @@ import { trigger, transition, style, animate } from '@angular/animations';
 export class ListGamesComponent implements OnInit, OnDestroy {
   @Output() emitEnterGame = new EventEmitter<void>();
 
-  private disconnectionSubscription: Subscription= new Subscription();
+  private disconnectionSubscription: Subscription = new Subscription();
   private baseUrl: string = 'http://192.168.0.42:3000/';
 
   games: Array<Game> = [];
   players: Array<Player> = [];
   user: any = "";
+  userLogged: Player | undefined;
 
 
-  constructor (private http: HttpClient, private socketService: SocketService){}
+  constructor(private http: HttpClient, private socketService: SocketService) { }
 
-  ngOnInit(): void{
+  ngOnInit(): void {
     this.setUser();
 
     this.getAllGamesAvaliable();
@@ -41,14 +42,14 @@ export class ListGamesComponent implements OnInit, OnDestroy {
     this.setupSocketListeners();
   }
 
-  ngOnDestroy(): void{
+  ngOnDestroy(): void {
 
   }
 
-  private setupSocketListeners(): void{
-    //Escucha cuando se creó un juego 
+  private setupSocketListeners(): void {
+    //Escucha cuando se creó un juego
     this.socketService.listen<Game>('create-game').subscribe((newGame: Game) => {
-      this.http.get<Player>(`${this.baseUrl}player/${newGame.playerXid}`).subscribe((namePlayer: Player)=>{
+      this.http.get<Player>(`${this.baseUrl}player/${newGame.playerXid}`).subscribe((namePlayer: Player) => {
         newGame.playerXname = namePlayer.nombre;
       })
       this.games.push(newGame as Game)
@@ -59,18 +60,18 @@ export class ListGamesComponent implements OnInit, OnDestroy {
     });
   }
 
-  setUser(): void{
+  setUser(): void {
     let playerLocalStorage = localStorage.getItem('player');
-    if(playerLocalStorage){
+    if (playerLocalStorage) {
       this.user = JSON.parse(playerLocalStorage);
     }
   }
 
 
-  getAllGamesAvaliable(): void{
+  getAllGamesAvaliable(): void {
     this.http.get<Game[]>(`${this.baseUrl}game/allFreeGames`).subscribe((games: Game[]) => {
       this.games = games
-      this.http.get<Player[]>(`${this.baseUrl}player/`).subscribe((players: Player[])=>{
+      this.http.get<Player[]>(`${this.baseUrl}player/`).subscribe((players: Player[]) => {
         this.players = players;
         this.games.forEach(game => {
           game.playerXname = this.players.find(player => player.id === game.playerXid)?.nombre || 'Unknown';
@@ -79,7 +80,7 @@ export class ListGamesComponent implements OnInit, OnDestroy {
     });
   }
 
-  createGame(playerId: number){
+  createGame(playerId: number) {
     const gameData = {
       board: JSON.stringify([
         ['', '', ''],
@@ -91,7 +92,7 @@ export class ListGamesComponent implements OnInit, OnDestroy {
       playerOid: "",
       turn: 'X',
     }
-    this.http.post<Game>(`${this.baseUrl}game/`, gameData).subscribe((game: Game)=>{
+    this.http.post<Game>(`${this.baseUrl}game/`, gameData).subscribe((game: Game) => {
       console.log('create-game', game);
 
       this.socketService.emit('create-game', game);
@@ -99,7 +100,7 @@ export class ListGamesComponent implements OnInit, OnDestroy {
     });
   }
 
-  joinGame(gameId: number): void{
+  joinGame(gameId: number): void {
     const gameData = {
       status: 1,
       playerOid: this.user.id,
@@ -111,5 +112,3 @@ export class ListGamesComponent implements OnInit, OnDestroy {
     })
   }
 }
-
-
