@@ -17,9 +17,9 @@ export class AppComponent implements OnInit {
 
   }
 
-  ngOnDestroy(): void {
-    this.socketService.emit('player-disconnected', "");
-  }
+  // ngOnDestroy(): void {
+  //   this.socketService.emit('player-disconnected', "");
+  // }
 
   setRegistered() {
     this.isRegistered = true;

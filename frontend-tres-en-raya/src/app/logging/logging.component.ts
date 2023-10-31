@@ -12,7 +12,7 @@ import { PlayerService } from '../player.service';
 export class LoggingComponent implements OnInit{
   @Output() emitRegistered = new EventEmitter<void>();
 
-  private baseUrl: string = 'http://192.168.0.42:3000/';
+  private baseUrl: string = 'http://localhost:3000/';
   public inputNombre: string = '';
   private socket: any;
 

@@ -13,8 +13,7 @@ import { PlayerService } from '../player.service';
   styleUrls: ['./game.component.css']
 })
 export class GameComponent implements OnInit, OnDestroy {
-  private disconnectionSubscription: Subscription = new Subscription();
-  private baseUrl: string = 'http://192.168.0.42:3000/';
+  private baseUrl: string = 'http://localhost:3000/';
 
   board: string[][] = [
     ['', '', ''],
@@ -45,10 +44,7 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log('destroy');
-
-    this.socketService.emit('disconnect', this.game);
-    this.disconnectionSubscription.unsubscribe();
+    this.socketService.emit('disconnected', "");
 
   }
 
@@ -99,6 +95,8 @@ export class GameComponent implements OnInit, OnDestroy {
 
       this.game = game;
       this.resultado = this.winnerMessage(this.winner);
+      console.log(this.resultado);
+
     });
 
     this.socketService.listen<Game>('ready-restart-game').subscribe((game: Game) => {
@@ -123,7 +121,7 @@ export class GameComponent implements OnInit, OnDestroy {
 
 
     this.socketService.listen('player-disconnected').subscribe(()=>{
-      console.log('disconnected');
+      console.log('evento player-disconnected');
 
       this.opponentDisconnected = true;
     })

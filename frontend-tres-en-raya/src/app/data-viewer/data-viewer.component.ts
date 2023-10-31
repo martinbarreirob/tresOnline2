@@ -9,7 +9,7 @@ import { Game, Player } from '../models/interfaces.model'
 })
 export class DataViewerComponent implements OnInit {
 
-  private baseUrl = 'http://192.168.0.42:3000/'; // URL de tu backend para el recurso game
+  private baseUrl = 'http://localhost:3000/'; // URL de tu backend para el recurso game
 
   games: Game[] = []; // Aquí almacenaremos la lista de juegos
 
