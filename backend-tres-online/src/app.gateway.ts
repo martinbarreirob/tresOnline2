@@ -14,20 +14,21 @@ import { Server, Socket } from 'socket.io';
 export class AppGateway {
   @WebSocketServer() server: Server;
 
+  private roomByClientId: { [clientId: string]: string } = {};
+
   @SubscribeMessage('player-connected')
   handlePlayerConnected(client: Socket, data: any) {
     console.log('Nuevo jugador conectado:', data);
     client.broadcast.emit('player-connected', data);
   }
 
+
   @SubscribeMessage('create-game')
   handleCreateGame(client: Socket, payload: any): void {
     console.log(`${client.id} created the game ${payload.id}`);
-    // Notify only the clients in that room (including the sender)
-    this.server.emit('create-game', payload);
-
-    // Join the room
+    this.roomByClientId[client.id] = payload.id;
     client.join(payload.id);
+    this.server.emit('create-game', payload);
   }
 
   //Cuando un usuario se une a un juego avisa a todos los usuarios
@@ -39,13 +40,11 @@ export class AppGateway {
     this.server.emit('list-games', payload);
   }
 
-  //Cuando un usuario entra a un juego notifica al dueño del juego la unión
   @SubscribeMessage('player-join-game')
   handleJoinGame(client: Socket, payload: any): void {
     console.log(`${payload} joined the game ${payload.id}`);
-    // Join the room
+    this.roomByClientId[client.id] = payload.id;
     client.join(payload.id);
-    // Notify only the clients in that room (including the sender)
     this.server.to(payload.id).emit('player-join-game', payload);
   }
 
@@ -75,17 +74,17 @@ export class AppGateway {
     this.server.to(payload.id).emit('restart-game', payload);
   }
 
-  @SubscribeMessage('player-disconnected')
+  //Disconnect 
   handleDisconnect(client: Socket) {
-    console.log('Event player-disconnected:', client.id);
-    // Aquí puedes emitir un evento para informar a otros clientes sobre la desconexión
-    this.server.emit('player-disconnected', { playerId: client.id });
+    console.log(`Client disconnected: ${client.id}`);
+    const roomId = this.getRoomId(client.id);
+    if (roomId) {
+      this.server.to(roomId).emit('player-disconnected', { clientId: client.id, roomId });
+      delete this.roomByClientId[client.id];  // Remove the client's room info since they have disconnected
+    }
   }
 
-  @SubscribeMessage('disconnected')
-  handleGameDisconnect(client: Socket) {
-    console.log('Event disconnected:', client.id);
-    // Aquí puedes emitir un evento para informar a otros clientes sobre la desconexión
-    this.server.emit('player-disconnected', { playerId: client.id });
+  private getRoomId(clientId: string): string | null {
+    return this.roomByClientId[clientId] || null;
   }
 }

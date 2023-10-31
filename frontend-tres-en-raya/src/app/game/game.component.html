@@ -1,3 +1,4 @@
+<app-header></app-header>
 <!-- PANTALLA WAITING FOR OPPONENT -->
 <div class="waiting text-center" *ngIf="(((playingFor !== game?.turn || !opponent ) && gameOver != true) || playerReadyRestart)">
     <div>
@@ -9,24 +10,23 @@
 
 
 <!-- ALERTA DE VICTORIA -->
-<div class="alert" *ngIf="gameOver === true && opponentDisconnected === false" (click)="emitRestartGame()">
-  <div type="button" class="alert-win text-center">
+<div class="alert" *ngIf="gameOver === true && opponentDisconnected === false" >
+  <div type="button" class="alert-win text-center" (click)="emitRestartGame()">
     <div class="alert-msg" >{{ resultado }}</div>
     <div class="alert-span">Click for Restart</div>
-
   </div>
 </div>
 
 
 <!-- MENSAJE DE OPONENTE DESCONECTADO -->
 <div class="alert" *ngIf="opponentDisconnected === true">
-  <div type="button" class="alert-win text-center" (click)="reloadPage()">
+  <div type="button" class="alert-disconnect text-center" (click)="reloadPage()">
     <div class="alert-disconnected">Opponente Disconnected</div>
     <div class="alert-span">click for restart</div>
   </div>
 </div>
 
-<app-header></app-header>
+
 
 
 <!-- LOGICA DEL JUEGO -->

@@ -22,7 +22,7 @@ export class LoggingComponent implements OnInit{
   ngOnInit(): void {
     // Escuchar el evento de conexión del socket
     this.socketService.socket.on('connect', () => {
-  });
+    });
 
 
   }

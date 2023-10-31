@@ -1,6 +1,6 @@
 //game.component.ts
 
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { SocketService } from '../socket.service'; // Asegúrate de importar tu servicio
 import { HttpClient } from '@angular/common/http';
 import { Player, Game } from '../models/interfaces.model';
@@ -13,6 +13,8 @@ import { PlayerService } from '../player.service';
   styleUrls: ['./game.component.css']
 })
 export class GameComponent implements OnInit, OnDestroy {
+  @Output() emitEnterGame = new EventEmitter<void>();
+
   private baseUrl: string = 'http://localhost:3000/';
 
   board: string[][] = [
@@ -44,7 +46,6 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.socketService.emit('disconnected', "");
 
   }
 
@@ -264,7 +265,9 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   reloadPage(): void {
-    window.location.reload();
+    this.emitEnterGame.emit();
+    console.log('reload');
+
   }
 }
 
