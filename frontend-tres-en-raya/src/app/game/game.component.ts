@@ -6,16 +6,35 @@ import { HttpClient } from '@angular/common/http';
 import { Player, Game } from '../models/interfaces.model';
 import { Observable, Subscription, first } from 'rxjs';
 import { PlayerService } from '../player.service';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-game',
   templateUrl: './game.component.html',
-  styleUrls: ['./game.component.css']
+  styleUrls: ['./game.component.css'],
+  animations: [
+    trigger('slideInOut', [
+      state('void', style({
+        transform: 'translateX(-100%)'
+      })),
+      state('*', style({
+        transform: 'translateX(0)'
+      })),
+      transition(':enter', [
+        animate('300ms ease-in')
+      ]),
+      transition(':leave', [
+        animate('300ms ease-out', style({
+          transform: 'translateX(100%)'
+        }))
+      ])
+    ])
+  ]//Fin Animacion
 })
 export class GameComponent implements OnInit, OnDestroy {
-  @Output() emitEnterGame = new EventEmitter<void>();
+  @Output() buttonLogout = new EventEmitter<void>();
 
-  private baseUrl: string = 'http://localhost:3000/';
+  private baseUrl: string = 'http://192.168.0.37:3000/';
 
   board: string[][] = [
     ['', '', ''],
@@ -46,6 +65,8 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.socketService.emit('closeGame', "");
+    console.log('destroy');
 
   }
 
@@ -265,9 +286,8 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   reloadPage(): void {
-    this.emitEnterGame.emit();
+    this.buttonLogout.emit();
     console.log('reload');
-
   }
 }
 

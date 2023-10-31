@@ -25,7 +25,7 @@ export class ListGamesComponent implements OnInit, OnDestroy {
   @Output() emitEnterGame = new EventEmitter<void>();
 
   private disconnectionSubscription: Subscription = new Subscription();
-  private baseUrl: string = 'http://localhost:3000/';
+  private baseUrl: string = 'http://192.168.0.37:3000/';
 
   games: Array<Game> = [];
   players: Array<Player> = [];
@@ -59,6 +59,15 @@ export class ListGamesComponent implements OnInit, OnDestroy {
 
     this.socketService.listen<Game>('list-games').subscribe((game: Game) => {
       this.games = this.games.filter(g => g.id !== game.id);
+    });
+
+    this.socketService.listen('clear-game').subscribe((data: any) => {
+      const gameData = {
+        status: 1,
+      }
+
+      this.games = this.games.filter(game => game.id !== data);
+      this.http.put<Game>(`${this.baseUrl}game/${data}`, gameData).subscribe({})
     });
   }
 

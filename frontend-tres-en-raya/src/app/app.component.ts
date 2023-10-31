@@ -15,7 +15,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.socketService.listen('player-disconnected').subscribe((data: any)=>{
-      console.log(data);
     })
   }
 
@@ -28,6 +27,12 @@ export class AppComponent implements OnInit {
       this.isOnGame = true;
     }else{
       this.isOnGame = false
+    }
+  }
+
+  logout(){
+    if(this.isOnGame === true){
+      this.isOnGame = false;
     }
   }
 }

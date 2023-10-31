@@ -1,63 +1,65 @@
-<app-header></app-header>
-<!-- PANTALLA WAITING FOR OPPONENT -->
-<div class="waiting text-center" *ngIf="(((playingFor !== game?.turn || !opponent ) && gameOver != true) || playerReadyRestart)">
-    <div>
-      <p>Waiting For Opponent</p>
-    </div>
-    <span class="loader"></span>
-</div>
-
-
-
-<!-- ALERTA DE VICTORIA -->
-<div class="alert" *ngIf="gameOver === true && opponentDisconnected === false" >
-  <div type="button" class="alert-win text-center" (click)="emitRestartGame()">
-    <div class="alert-msg" >{{ resultado }}</div>
-    <div class="alert-span">Click for Restart</div>
+<div @slideInOut >
+  <app-header (buttonLogout)="reloadPage()"></app-header>
+  <!-- PANTALLA WAITING FOR OPPONENT -->
+  <div class="waiting text-center" *ngIf="(((playingFor !== game?.turn || !opponent ) && gameOver != true) || playerReadyRestart)">
+      <div>
+        <p>Waiting For Opponent</p>
+      </div>
+      <span class="loader"></span>
   </div>
-</div>
-
-
-<!-- MENSAJE DE OPONENTE DESCONECTADO -->
-<div class="alert" *ngIf="opponentDisconnected === true">
-  <div type="button" class="alert-disconnect text-center" (click)="reloadPage()">
-    <div class="alert-disconnected">Opponente Disconnected</div>
-    <div class="alert-span">click for restart</div>
-  </div>
-</div>
 
 
 
-
-<!-- LOGICA DEL JUEGO -->
-<div class="game-container" >
-  <div class="player-section bg-blue d-flex justify-content-center">
-    <div class="text-end mt-5">
-      <div class="player-points" *ngIf="game.playerXid === player?.id">{{ game.winX }}</div>
-      <div class="player-points" *ngIf="game.playerOid === player?.id">{{ game.winO }}</div>
-      <div class="player-name">{{ player?.nombre }}</div>
-      <div class="player-turn" *ngIf="game.turn === playingFor && opponent ">TU TURNO</div>
+  <!-- ALERTA DE VICTORIA -->
+  <div class="alert" *ngIf="gameOver === true && opponentDisconnected === false" >
+    <div type="button" class="alert-win text-center" (click)="emitRestartGame()">
+      <div class="alert-msg" >{{ resultado }}</div>
+      <div class="alert-span">Click for Restart</div>
     </div>
   </div>
 
-  <div class="divisor"></div>
-  <div class="player-section bg-purple d-flex justify-content-center">
-    <div  class="text-start mt-5">
-      <div class="player-points" *ngIf="game.playerXid === player?.id && opponent">{{ game.winO }}</div>
-      <div class="player-points" *ngIf="game.playerOid === player?.id && opponent">{{ game.winX }}</div>
-        <div class="player-name">{{opponent?.nombre}}</div>
+
+  <!-- MENSAJE DE OPONENTE DESCONECTADO -->
+  <div class="alert" *ngIf="opponentDisconnected === true">
+    <div type="button" class="alert-disconnect text-center" (click)="reloadPage()">
+      <div class="alert-disconnected">Opponente Disconnected</div>
+      <div class="alert-span">click for restart</div>
     </div>
   </div>
 
-  <!-- TABLERO -->
-  <div class="board-container">
-    <table class="tres-en-raya">
-      <tr *ngFor="let row of [0, 1, 2]">
-        <td *ngFor="let col of [0, 1, 2]" (click)="makeMove(row, col)">
-          {{ board[row][col] }}
-        </td>
-      </tr>
-    </table>
-  </div>
 
+
+
+  <!-- LOGICA DEL JUEGO -->
+  <div class="game-container">
+    <div class="player-section bg-blue d-flex justify-content-center">
+      <div class="text-end mt-5">
+        <div class="player-points" *ngIf="game.playerXid === player?.id">{{ game.winX }}</div>
+        <div class="player-points" *ngIf="game.playerOid === player?.id">{{ game.winO }}</div>
+        <div class="player-name">{{ player?.nombre }}</div>
+        <div class="player-turn" *ngIf="game.turn === playingFor && opponent ">TU TURNO</div>
+      </div>
+    </div>
+
+    <div class="divisor"></div>
+    <div class="player-section bg-purple d-flex justify-content-center">
+      <div  class="text-start mt-5">
+        <div class="player-points" *ngIf="game.playerXid === player?.id && opponent">{{ game.winO }}</div>
+        <div class="player-points" *ngIf="game.playerOid === player?.id && opponent">{{ game.winX }}</div>
+          <div class="player-name">{{opponent?.nombre}}</div>
+      </div>
+    </div>
+
+    <!-- TABLERO -->
+    <div class="board-container">
+      <table class="tres-en-raya">
+        <tr *ngFor="let row of [0, 1, 2]">
+          <td *ngFor="let col of [0, 1, 2]" (click)="makeMove(row, col)">
+            {{ board[row][col] }}
+          </td>
+        </tr>
+      </table>
+    </div>
+
+  </div>
 </div>

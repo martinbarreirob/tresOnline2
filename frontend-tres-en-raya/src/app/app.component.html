@@ -3,4 +3,4 @@
 
 <app-list-games *ngIf="isRegistered && !isOnGame" (emitEnterGame)="setEnterGame()"></app-list-games>
 
-<app-game *ngIf="isOnGame" (emitEnterGame)="setEnterGame()"></app-game>
+<app-game *ngIf="isOnGame" (buttonLogout)="logout()"></app-game>

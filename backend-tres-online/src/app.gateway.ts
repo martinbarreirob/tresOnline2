@@ -75,11 +75,13 @@ export class AppGateway {
   }
 
   //Disconnect 
+  @SubscribeMessage('closeGame')
   handleDisconnect(client: Socket) {
     console.log(`Client disconnected: ${client.id}`);
-    const roomId = this.getRoomId(client.id);
+    const roomId = this.getRoomId(client.id);    
     if (roomId) {
       this.server.to(roomId).emit('player-disconnected', { clientId: client.id, roomId });
+      this.server.emit('clear-game', roomId);
       delete this.roomByClientId[client.id];  // Remove the client's room info since they have disconnected
     }
   }

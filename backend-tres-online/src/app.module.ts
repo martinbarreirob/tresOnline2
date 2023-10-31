@@ -12,7 +12,7 @@ import { AppGateway } from './app.gateway';
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
+      host: '192.168.0.37',
       port: 3306,
       username: 'martin', // Usuario por defecto en XAMPP
       password: 'abc123.,',     // Contraseña vacía por defecto en XAMPP
