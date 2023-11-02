@@ -1,5 +1,5 @@
 <div @slideInOut >
-  <app-header (buttonLogout)="reloadPage()"></app-header>
+  <app-header (emitLogout)="emitLogout()"></app-header>
   <!-- PANTALLA WAITING FOR OPPONENT -->
   <div class="waiting text-center" *ngIf="(((playingFor !== game?.turn || !opponent ) && gameOver != true) || playerReadyRestart)">
       <div>

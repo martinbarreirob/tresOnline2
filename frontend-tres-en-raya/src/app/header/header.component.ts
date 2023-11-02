@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Output, } from '@angular/core';
 import { Player } from '../models/interfaces.model';
 import { PlayerService } from '../player.service';
+import { SocketService } from '../socket.service'; // Asegúrate de importar tu servicio
 
 @Component({
   selector: 'app-header',
@@ -8,13 +9,13 @@ import { PlayerService } from '../player.service';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
-  @Output() buttonLogout = new EventEmitter<void>();
+  @Output() emitLogout = new EventEmitter<void>();
   player: Player | null = this.playerService.getCurrentPlayer();
 
-  constructor(private playerService: PlayerService) {}
+  constructor(private playerService: PlayerService,  private socketService: SocketService) {}
 
   logoutButton(): void {
-    this.buttonLogout.emit();
-    console.log('proba');
+    this.emitLogout.emit();
+    this.socketService.emit('clear-own-game', "")
   }
 }

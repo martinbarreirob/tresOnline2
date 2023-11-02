@@ -31,6 +31,8 @@ export class AppComponent implements OnInit {
   }
 
   logout(){
+    console.log('logout app.ts');
+
     if(this.isOnGame === true){
       this.isOnGame = false;
     }

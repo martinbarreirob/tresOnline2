@@ -3,7 +3,7 @@ import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/cor
 import { SocketService } from '../socket.service'; // Asegúrate de importar tu servicio
 import { HttpClient } from '@angular/common/http';
 import { Player, Game } from '../models/interfaces.model';
-import { Subscription } from 'rxjs';
+import { Subscription, first } from 'rxjs';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { PlayerService } from '../player.service';
 
@@ -62,12 +62,22 @@ export class ListGamesComponent implements OnInit, OnDestroy {
     });
 
     this.socketService.listen('clear-game').subscribe((data: any) => {
+      console.log('listen clear-game' ,data);
+
       const gameData = {
         status: 1,
       }
-
       this.games = this.games.filter(game => game.id !== data);
       this.http.put<Game>(`${this.baseUrl}game/${data}`, gameData).subscribe({})
+    });
+
+    this.socketService.listen('clear-own-game').subscribe((data: any) => {
+      const gameData = {
+        status: 1,
+      }
+      this.http.put<Game>(`${this.baseUrl}game/${data}`, gameData).subscribe((game: Game) => {
+        this.games = this.games.filter(g => g.id !== game.id);
+      })
     });
   }
 

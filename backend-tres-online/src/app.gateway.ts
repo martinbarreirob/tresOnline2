@@ -50,7 +50,7 @@ export class AppGateway {
 
   @SubscribeMessage('updated-game')
   handleGameUpdated(client: Socket, data: any) {
-    console.log('Mesa de juego actualizada:', );
+    console.log('Mesa de juego actualizada:',);
     this.server.to(data.id).emit('updated-game', data);
   }
 
@@ -74,11 +74,20 @@ export class AppGateway {
     this.server.to(payload.id).emit('restart-game', payload);
   }
 
+
+  @SubscribeMessage('clear-own-game')
+  handleClearListGames(client: Socket): void {
+    const roomId = this.getRoomId(client.id);
+    if (roomId) {
+      console.log(`Player ${client.id} leaves game ${roomId}.`);
+      this.server.emit('clear-own-game', roomId);
+    }
+  }
+
   //Disconnect 
-  @SubscribeMessage('closeGame')
   handleDisconnect(client: Socket) {
     console.log(`Client disconnected: ${client.id}`);
-    const roomId = this.getRoomId(client.id);    
+    const roomId = this.getRoomId(client.id);
     if (roomId) {
       this.server.to(roomId).emit('player-disconnected', { clientId: client.id, roomId });
       this.server.emit('clear-game', roomId);

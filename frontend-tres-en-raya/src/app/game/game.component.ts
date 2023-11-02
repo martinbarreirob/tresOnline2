@@ -53,6 +53,7 @@ export class GameComponent implements OnInit, OnDestroy {
   playerReadyRestart: boolean = false;
   opponentReadyRestart: boolean = false;
   opponentDisconnected: boolean = false;
+  private disconnectionSubscription: Subscription = new Subscription();
 
 
   constructor(private http: HttpClient, private socketService: SocketService, private playerService: PlayerService) {
@@ -65,9 +66,7 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.socketService.emit('closeGame', "");
-    console.log('destroy');
-
+    this.disconnectionSubscription.unsubscribe();
   }
 
   //#######################################################################
@@ -113,12 +112,8 @@ export class GameComponent implements OnInit, OnDestroy {
 
     //Cuando alguien gana recibe el evento para actualizar mesa y contadores
     this.socketService.listen<Game>('updated-winner-game').subscribe((game: Game) => {
-      console.log('aaaaaa');
-
       this.game = game;
       this.resultado = this.winnerMessage(this.winner);
-      console.log(this.resultado);
-
     });
 
     this.socketService.listen<Game>('ready-restart-game').subscribe((game: Game) => {
@@ -143,8 +138,6 @@ export class GameComponent implements OnInit, OnDestroy {
 
 
     this.socketService.listen('player-disconnected').subscribe(()=>{
-      console.log('evento player-disconnected');
-
       this.opponentDisconnected = true;
     })
   }
@@ -241,8 +234,6 @@ export class GameComponent implements OnInit, OnDestroy {
     }
 
     this.http.put<Game>(`${this.baseUrl}game/${this.game.id}`, gameData).subscribe((game) => {
-      console.log('va a updated');
-
       this.socketService.emit('updated-winner-game', game);
     });
   }
@@ -285,9 +276,14 @@ export class GameComponent implements OnInit, OnDestroy {
     this.updateBoard(JSON.stringify(tableroLimpio), turno);
   }
 
-  reloadPage(): void {
+  reloadPage(): void{
+    this.buttonLogout.emit()
+  }
+
+  emitLogout(): void {
+    console.log('emitLgout en game.ts');
+
     this.buttonLogout.emit();
-    console.log('reload');
   }
 }
 
