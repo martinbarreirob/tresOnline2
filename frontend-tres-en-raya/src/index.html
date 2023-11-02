@@ -6,8 +6,17 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <script src="https://www.google.com/recaptcha/enterprise.js?render=6Le4IOwoAAAAAJX9P3dv5Us6Fn86bh7iVc1VBEL0" async defer></script>
 </head>
 <body>
   <app-root></app-root>
 </body>
 </html>
+<script>
+  function onClick(e) {
+    e.preventDefault();
+    grecaptcha.enterprise.ready(async () => {
+      const token = await grecaptcha.enterprise.execute('6Le4IOwoAAAAAJX9P3dv5Us6Fn86bh7iVc1VBEL0', {action: 'LOGIN'});
+    });
+  }
+</script>

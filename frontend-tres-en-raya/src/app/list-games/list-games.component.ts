@@ -62,7 +62,7 @@ export class ListGamesComponent implements OnInit, OnDestroy {
     });
 
     this.socketService.listen('clear-game').subscribe((data: any) => {
-      console.log('listen clear-game' ,data);
+      console.log('listen clear-game', data);
 
       const gameData = {
         status: 1,
@@ -108,7 +108,7 @@ export class ListGamesComponent implements OnInit, OnDestroy {
       playerOid: "",
       turn: 'X',
     }
-    this.http.post<Game>(`${this.baseUrl}game/`, gameData).subscribe((game: Game)=>{
+    this.http.post<Game>(`${this.baseUrl}game/`, gameData).subscribe((game: Game) => {
 
       this.socketService.emit('create-game', game);
       this.emitEnterGame.emit();
@@ -125,5 +125,10 @@ export class ListGamesComponent implements OnInit, OnDestroy {
       this.socketService.emit('list-games', game);
       this.emitEnterGame.emit();
     })
+  };
+
+  logout(): void {
+    location.reload();
+
   }
 }
