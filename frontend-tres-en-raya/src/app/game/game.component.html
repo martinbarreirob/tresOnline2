@@ -32,7 +32,7 @@
 
   <!-- LOGICA DEL JUEGO -->
   <div class="game-container">
-    <div class="player-section bg-blue d-flex justify-content-center">
+    <!-- <div class="player-section bg-blue d-flex justify-content-center">
       <div class="text-end mt-5">
         <div class="player-points" *ngIf="game.playerXid === player?.id">{{ game.winX }}</div>
         <div class="player-points" *ngIf="game.playerOid === player?.id">{{ game.winO }}</div>
@@ -40,13 +40,26 @@
         <div class="player-turn" *ngIf="game.turn === playingFor && opponent ">TU TURNO</div>
       </div>
     </div>
-
     <div class="divisor"></div>
     <div class="player-section bg-purple d-flex justify-content-center">
       <div  class="text-start mt-5">
         <div class="player-points" *ngIf="game.playerXid === player?.id && opponent">{{ game.winO }}</div>
         <div class="player-points" *ngIf="game.playerOid === player?.id && opponent">{{ game.winX }}</div>
           <div class="player-name">{{opponent?.nombre}}</div>
+      </div>
+    </div> -->
+    <div class="player-section bg-blue d-flex justify-content-center">
+      <div class="text-center mt-5">
+        <div class="player-points" >2</div>
+        <div class="player-name">Martín</div>
+        <div class="player-turn">TU TURNO</div>
+      </div>
+    </div>
+    <div class="divisor"></div>
+    <div class="player-section bg-purple d-flex justify-content-center">
+      <div  class="text-center mt-5">
+        <div class="player-points">2</div>
+          <div class="player-name">Ezequiel</div>
       </div>
     </div>
 

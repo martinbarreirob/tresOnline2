@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { GameComponent } from './game/game.component';
 import { ListGamesComponent } from './list-games/list-games.component';
 import { HeaderComponent } from './header/header.component';
+import { ChatComponent } from './chat/chat.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { HeaderComponent } from './header/header.component';
     GameComponent,
     ListGamesComponent,
     HeaderComponent,
+    ChatComponent,
   ],
   imports: [
     BrowserModule,

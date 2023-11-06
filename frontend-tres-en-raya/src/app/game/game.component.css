@@ -2,6 +2,7 @@
   position: relative; /* Para posicionar el tablero encima */
   display: flex;
   height: 100vh;
+  width: 100vw;
   overflow: hidden;
 }
 
@@ -20,7 +21,7 @@
 }
 
 .player-turn{
-  font-size: min(55px, 7vw);
+  font-size: min(45px, 6vw);
   font-weight: 200;
 }
 

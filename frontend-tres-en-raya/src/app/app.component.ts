@@ -8,8 +8,8 @@ import { SocketService } from './socket.service';
 })
 export class AppComponent implements OnInit {
   title = 'frontend-tres-en-raya';
-  isRegistered: boolean = false; //CAMBIAR A FALSE
-  isOnGame: boolean = false;
+  isRegistered: boolean = true; //CAMBIAR A FALSE
+  isOnGame: boolean = true;
 
   constructor(private socketService: SocketService) { }
 

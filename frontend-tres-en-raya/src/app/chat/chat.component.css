@@ -1,0 +1,147 @@
+.chat-container{
+  position: fixed;
+  bottom: 4%;
+  right: 5%;
+}
+
+.chat-container.open {
+  width: calc(100px 20vw);
+  height: 500px;
+  border: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  border-radius: 10px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  transition: width 1s ease, height 1s ease;
+}
+
+.chat-container.closed {
+  width: 8em;
+  height: 3em;
+  background-color: rgb(244, 244, 244);
+  padding: 10px;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  color: black;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+  transition: width 8s ease, height 0.7s ease;
+}
+
+.chat-header {
+  height: 50px;
+  background-color: rgb(244, 244, 244);
+  text-align: left;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  border-bottom: 1px solid #ddd;
+  justify-content: space-between;
+  height: 10%;
+}
+
+.chat-header i{
+  color: rgb(164, 164, 164);
+  cursor: pointer;
+  transition: transform  0.5s, color 800ms;
+}
+
+.chat-header i:hover{
+ transform: scale(1.2);
+ color:gray;
+}
+
+.chat-title {
+  font-size: 1.1em;
+  font-weight:normal;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(236, 232, 228);
+  height: 77%;
+  -ms-overflow-style: none; /* IE y Edge */
+  scrollbar-width: none; /* Firefox */
+
+}
+.chat-messages::-webkit-scrollbar {
+  display: none;
+}
+
+.chat-form {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #ddd;
+  background-color: rgb(244, 244, 244);
+  position: relative;
+  bottom: 0%;
+}
+
+.chat-form input {
+  flex: 1;
+  padding: 10px;
+  padding-left: 15px;
+  border: none;
+  margin-right: 10px;
+  border-radius: 8px;
+  border: 1px solid #eeeeee;
+}
+
+.chat-form button {
+  padding: 10px 15px;
+  background-color: #7c9ada;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 40px;
+  transition: background-color 800ms;
+}
+
+.chat-form button:hover {
+  background-color: rgb(46, 107, 249);
+}
+
+/* Estilos para los mensajes */
+.chat-message {
+  padding: 5px 10px;
+  margin: 5px 0;
+  border-radius: 8px;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+  width: max-content;
+  max-width: 80%;
+}
+
+.chat-message.sent {
+  background-color: rgb(223, 232, 252);
+  align-self: flex-end;
+  text-align: start;
+}
+
+.chat-message.received {
+  background-color: white;
+  align-self: flex-start;
+  text-align: start;
+}
+
+.chat-content{
+  height: 100%;
+}
+
+/* Estilos para el icono dentro del botón cuando está cerrado */
+.chat-container.closed .bi-chat {
+  color: rgb(0, 0, 0);
+  font-size: 20px; /* Ajusta al tamaño que prefieras */
+}
+
+.button-chat{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5em;
+}

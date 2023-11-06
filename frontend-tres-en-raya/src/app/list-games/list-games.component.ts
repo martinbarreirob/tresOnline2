@@ -79,6 +79,7 @@ export class ListGamesComponent implements OnInit, OnDestroy {
         this.games = this.games.filter(g => g.id !== game.id);
       })
     });
+
   }
 
 

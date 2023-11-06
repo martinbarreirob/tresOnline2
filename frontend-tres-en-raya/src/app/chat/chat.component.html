@@ -1,0 +1,60 @@
+<!-- Contenedor principal que empieza como un botón y se expande a ser el chat -->
+<div class="chat-container" [ngClass]="{'closed': !isOpen, 'open': isOpen}">
+  <!-- Si el chat está cerrado, muestra solo el icono -->
+  <div *ngIf="!isOpen" class="button-chat" (click)="toggleChat()">
+    <div class="button-chat-text">Abrir Chat</div>
+    <div class="button-chat-icon">
+      <i class="bi bi-chat"></i>
+    </div>
+  </div>
+
+  <!-- Contenido del chat que se muestra cuando está abierto -->
+  <div *ngIf="isOpen" class="chat-content">
+    <div class="chat-header">
+      <div class="chat-title">Carmen</div>
+      <i class="bi bi-caret-down-fill" (click)="toggleChat()"></i>
+    </div>
+    <div class="chat-messages" id="chat-messages">
+      <div class="chat-message sent">
+        ¡Hola! ¿Cómo estás?
+      </div>
+      <!-- Mensaje recibido -->
+      <div class="chat-message received">
+        ¡Hola! Estoy bien, gracias. ¿Y tú?
+      </div>
+      <div class="chat-message sent">
+        ¡Hola! ¿Cómo estás?
+      </div>
+      <!-- Mensaje recibido -->
+      <div class="chat-message received">
+        ¡Hola! Estoy bien, gracias. ¿Y tú?
+      </div>
+      <div class="chat-message sent">
+        ¡Hola! ¿Cómo estás?
+      </div>
+      <!-- Mensaje recibido -->
+      <div class="chat-message received">
+        ¡Hola! Estoy bien, gracias. ¿Y tú?
+      </div>
+      <div class="chat-message sent">
+        ¡Hola! ¿Cómo estás?
+      </div>
+      <!-- Mensaje recibido -->
+      <div class="chat-message received">
+        ¡Hola! Estoy bien, gracias. ¿Y tú?
+      </div>
+      <div class="chat-message sent">
+        ¡Hola! ¿Cómo estás?
+      </div>
+      <!-- Mensaje recibido -->
+      <div class="chat-message received">
+        ¡Hola! Estoy bien, gracias. ¿Y tú?
+      </div>
+
+    </div>
+    <div class="chat-form">
+      <input type="text" id="chat-input" placeholder="Escribe un mensaje...">
+      <button id="send-button"><i class="bi bi-send"></i></button>
+    </div>
+  </div>
+</div>
