@@ -7,9 +7,9 @@ import { SocketService } from './socket.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  title = 'frontend-tres-en-raya';
-  isRegistered: boolean = true; //CAMBIAR A FALSE
-  isOnGame: boolean = true;
+  title = 'Tres Online';
+  isRegistered: boolean = false; //CAMBIAR A FALSE
+  isOnGame: boolean = false;
 
   constructor(private socketService: SocketService) { }
 

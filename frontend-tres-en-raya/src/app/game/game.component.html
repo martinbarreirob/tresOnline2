@@ -1,19 +1,13 @@
-<div @slideInOut >
+<div @slideInOut>
   <app-header (emitLogout)="emitLogout()"></app-header>
+  <app-chat *ngIf="opponent"></app-chat>
   <!-- PANTALLA WAITING FOR OPPONENT -->
-  <div class="waiting text-center" *ngIf="(((playingFor !== game?.turn || !opponent ) && gameOver != true) || playerReadyRestart)">
-      <div>
-        <p>Waiting For Opponent</p>
-      </div>
-      <span class="loader"></span>
-  </div>
-
 
 
   <!-- ALERTA DE VICTORIA -->
-  <div class="alert" *ngIf="gameOver === true && opponentDisconnected === false" >
+  <div class="alert" *ngIf="gameOver === true && opponentDisconnected === false">
     <div type="button" class="alert-win text-center" (click)="emitRestartGame()">
-      <div class="alert-msg" >{{ resultado }}</div>
+      <div class="alert-msg">{{ resultado }}</div>
       <div class="alert-span">Click for Restart</div>
     </div>
   </div>
@@ -32,8 +26,8 @@
 
   <!-- LOGICA DEL JUEGO -->
   <div class="game-container">
-    <!-- <div class="player-section bg-blue d-flex justify-content-center">
-      <div class="text-end mt-5">
+    <div class="player-section bg-blue d-flex justify-content-center">
+      <div class="text-center mt-5">
         <div class="player-points" *ngIf="game.playerXid === player?.id">{{ game.winX }}</div>
         <div class="player-points" *ngIf="game.playerOid === player?.id">{{ game.winO }}</div>
         <div class="player-name">{{ player?.nombre }}</div>
@@ -42,24 +36,10 @@
     </div>
     <div class="divisor"></div>
     <div class="player-section bg-purple d-flex justify-content-center">
-      <div  class="text-start mt-5">
+      <div class="text-center mt-5">
         <div class="player-points" *ngIf="game.playerXid === player?.id && opponent">{{ game.winO }}</div>
         <div class="player-points" *ngIf="game.playerOid === player?.id && opponent">{{ game.winX }}</div>
           <div class="player-name">{{opponent?.nombre}}</div>
-      </div>
-    </div> -->
-    <div class="player-section bg-blue d-flex justify-content-center">
-      <div class="text-center mt-5">
-        <div class="player-points" >2</div>
-        <div class="player-name">Martín</div>
-        <div class="player-turn">TU TURNO</div>
-      </div>
-    </div>
-    <div class="divisor"></div>
-    <div class="player-section bg-purple d-flex justify-content-center">
-      <div  class="text-center mt-5">
-        <div class="player-points">2</div>
-          <div class="player-name">Ezequiel</div>
       </div>
     </div>
 
@@ -73,6 +53,6 @@
         </tr>
       </table>
     </div>
-
   </div>
+
 </div>

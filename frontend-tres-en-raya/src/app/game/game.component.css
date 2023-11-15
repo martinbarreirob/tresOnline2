@@ -33,7 +33,7 @@
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.633); /* Gris translúcido */
-  z-index: 9998;   /* Asegurarse de que esté por encima de otros elementos */
+  z-index: 999;   /* Asegurarse de que esté por encima de otros elementos */
   display: flex;   /* Para centrar el contenido */
   align-items: center; /* Centrar verticalmente */
   justify-content: center; /* Centrar horizontalmente */
@@ -108,17 +108,6 @@
   font-size: 1em;
 }
 
-.divisor{
-  background-color: rgb(42, 42, 42, 0.1);
-  position: absolute;
-  height: 100%;
-  width: 2px;
-  top: 0;
-  left: 50%;
-  box-shadow: 0 0 20px rgba(62, 62, 62, 1); /* Sombra para dar efecto flotante */
-
-}
-
 /* Estilos para el tablero */
 .board-container {
   position: absolute;
@@ -130,9 +119,9 @@
   height: 90vmin; /* Altura basada en la dimensión más pequeña de la pantalla */
   transform: translate(-50%, -50%); /* Centrar en la pantalla */
   background-color: white;
-  border-radius: 15px; /* Esquinas redondeadas */
+  border-radius: 20px; /* Esquinas redondeadas */
   padding: 20px; /* Espaciado interno */
-  box-shadow: 0 0 15px rgba(62, 62, 62, 0.5); /* Sombra para dar efecto flotante */
+  box-shadow: 2px 2px 8px rgba(62, 62, 62, 0.4); /* Sombra para dar efecto flotante */
 }
 
 .tres-en-raya {
@@ -142,12 +131,12 @@
 }
 
 .tres-en-raya td {
-  border: 0.1em solid rgb(62, 62, 62);
   width: 33.33%;
   height: 33.33%;
   text-align: center;
   font-size: 3em;
   font-weight: 600;
+  border: 7px solid rgb(151, 195, 251);
 }
 
 .tres-en-raya tr:first-child td {

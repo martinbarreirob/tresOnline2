@@ -1,1 +1,23 @@
-<p>data-viewer works!</p>
+<!-- archivo.component.html -->
+<table style="position: absolute; right: 50;" class="table">
+  <ng-container *ngFor="let comunidad of estructuraAnidada">
+    <tr>
+      <td>{{ comunidad.nombre }}</td>
+    </tr>
+    <ng-container *ngFor="let provincia of comunidad.provincias">
+      <tr>
+        <td>{{ provincia.nombre }}</td>
+      </tr>
+      <ng-container *ngFor="let municipio of provincia.municipios">
+        <tr class="bg-primary">
+          <td>{{ municipio.nombre }}</td>
+        </tr>
+        <ng-container *ngFor="let centro of municipio.centros">
+          <tr>
+            <td>{{ centro.nombreCentro }}</td>
+          </tr>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</table>

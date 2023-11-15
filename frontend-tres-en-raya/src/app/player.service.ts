@@ -7,6 +7,7 @@ import { Player } from './models/interfaces.model';
 })
 export class PlayerService {
   private currentPlayer: Player | null = null;
+  private currentOpponent: Player | null = null;
 
   setCurrentPlayer(player: Player): void {
     this.currentPlayer = player;
@@ -14,5 +15,13 @@ export class PlayerService {
 
   getCurrentPlayer(): Player | null {
     return this.currentPlayer;
+  }
+
+  setCurrentOpponent(opponent: Player): void {
+    this.currentOpponent = opponent;
+  }
+
+  getCurrentOpponent(): Player | null {
+    return this.currentOpponent;
   }
 }

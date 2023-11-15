@@ -90,11 +90,13 @@ export class GameComponent implements OnInit, OnDestroy {
           //Carga en el oponente el playerX
           this.selectOneUser(game.playerXid).subscribe((opponent: Player) => {
             this.opponent = opponent;
+            this.playerService.setCurrentOpponent(opponent);
           });
         });
       } else {
         this.selectOneUser(game.playerOid).subscribe((opponent: Player) => {
           this.opponent = opponent;
+          this.playerService.setCurrentOpponent(opponent);
         });
       }
     });

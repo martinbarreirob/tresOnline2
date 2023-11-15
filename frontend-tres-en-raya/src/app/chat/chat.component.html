@@ -11,7 +11,7 @@
   <!-- Contenido del chat que se muestra cuando está abierto -->
   <div *ngIf="isOpen" class="chat-content">
     <div class="chat-header">
-      <div class="chat-title">Carmen</div>
+      <div class="chat-title">{{ opponent?.nombre }}</div>
       <i class="bi bi-caret-down-fill" (click)="toggleChat()"></i>
     </div>
     <div class="chat-messages" id="chat-messages">
