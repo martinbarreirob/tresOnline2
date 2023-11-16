@@ -5,10 +5,16 @@
               <h1 class="titulo">Tres <br>en<br> Raya</h1>
           </div>
       </div>
-      <div class="row">
-          <div class="col">
-              <input type="text" [(ngModel)]="inputNombre" class="form-control mb-2 shadow">
-              <button type="button" class="btn btn-primary" (click)="registroUser()">Jugar</button>
+      <div class="row ">
+          <div class="col d-flex justify-content-center">
+             <form (ngSubmit)="registroUser()">
+                <div class="input-group mb-3">
+                  <input type="text" class="form-control" name="inputName" [(ngModel)]="inputNombre" placeholder="Nombre de usuario..." (keydown.enter)="registroUser()">
+                  <div class="input-group-append">
+                    <button class="btn input-group-text" id="basic-addon2">Jugar</button>
+                  </div>
+                </div>
+              </form>
           </div>
       </div>
   </div>

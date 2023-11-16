@@ -3,6 +3,8 @@
   bottom: 4%;
   right: 5%;
   z-index: 9999;
+  max-width: 500px;
+  width: 91%;
 }
 
 .chat-container.open {
@@ -15,7 +17,7 @@
   border-radius: 10px;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
   overflow: hidden;
-  transition: width 1s ease, height 1s ease;
+  transition: width 0.7s ease, height 0.4s ease;
 }
 
 .chat-container.closed {
@@ -27,8 +29,14 @@
   overflow: hidden;
   cursor: pointer;
   color: black;
-  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
-  transition: width 8s ease, height 0.7s ease;
+  box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+  transition: width 0.4s ease, height 0.4s ease, transform 0.2s ease 0s;
+}
+
+.chat-container.closed:hover{
+  transform: scale(1.1);
+
+
 }
 
 .chat-header {
@@ -109,22 +117,31 @@
 }
 
 /* Estilos para los mensajes */
-.chat-message {
+.pop-message {
   padding: 5px 10px;
   margin: 5px 0;
   border-radius: 8px;
   box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
   width: max-content;
   max-width: 80%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
 }
 
-.chat-message.sent {
+.pop-message-user{
+  font-weight: 500;
+  font-size: 0.9em;
+}
+
+.pop-message.sent {
   background-color: rgb(223, 232, 252);
   align-self: flex-end;
   text-align: start;
 }
 
-.chat-message.received {
+
+.pop-message.received {
   background-color: white;
   align-self: flex-start;
   text-align: start;

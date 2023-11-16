@@ -11,5 +11,11 @@ export class Message {
   text?: string | null;
 
   @Column('int')
-  user: number;
+  userId: number;
+
+  @Column('int')
+  sala?: number | null;
+
+  @Column('varchar')
+  userName?: string | null;
 }

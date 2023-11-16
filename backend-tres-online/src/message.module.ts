@@ -11,4 +11,4 @@ import { Message } from './message.entity';
   providers: [MessageService], // Registrar el servicio
   controllers: [MessageController], // Registrar el controlador
 })
-export class GameModule {}
+export class MessageModule {}

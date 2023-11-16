@@ -95,6 +95,16 @@ export class AppGateway {
     }
   }
 
+
+  //Message events
+  @SubscribeMessage('messageEmited')
+  handleMessageEdited(client: Socket, mensaje: any): void {
+    console.log(`User ${client.id} send a message.`);
+
+    client.broadcast.emit('messageEmited', mensaje);
+
+  }
+
   private getRoomId(clientId: string): string | null {
     return this.roomByClientId[clientId] || null;
   }

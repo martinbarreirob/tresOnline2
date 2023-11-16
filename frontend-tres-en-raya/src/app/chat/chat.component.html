@@ -14,47 +14,22 @@
       <div class="chat-title">{{ opponent?.nombre }}</div>
       <i class="bi bi-caret-down-fill" (click)="toggleChat()"></i>
     </div>
-    <div class="chat-messages" id="chat-messages">
-      <div class="chat-message sent">
-        ¡Hola! ¿Cómo estás?
-      </div>
-      <!-- Mensaje recibido -->
-      <div class="chat-message received">
-        ¡Hola! Estoy bien, gracias. ¿Y tú?
-      </div>
-      <div class="chat-message sent">
-        ¡Hola! ¿Cómo estás?
-      </div>
-      <!-- Mensaje recibido -->
-      <div class="chat-message received">
-        ¡Hola! Estoy bien, gracias. ¿Y tú?
-      </div>
-      <div class="chat-message sent">
-        ¡Hola! ¿Cómo estás?
-      </div>
-      <!-- Mensaje recibido -->
-      <div class="chat-message received">
-        ¡Hola! Estoy bien, gracias. ¿Y tú?
-      </div>
-      <div class="chat-message sent">
-        ¡Hola! ¿Cómo estás?
-      </div>
-      <!-- Mensaje recibido -->
-      <div class="chat-message received">
-        ¡Hola! Estoy bien, gracias. ¿Y tú?
-      </div>
-      <div class="chat-message sent">
-        ¡Hola! ¿Cómo estás?
-      </div>
-      <!-- Mensaje recibido -->
-      <div class="chat-message received">
-        ¡Hola! Estoy bien, gracias. ¿Y tú?
+    <div class="chat-messages" #chatMessages>
+
+      <div *ngFor="let message of messages" class="pop-message"
+        [ngClass]="{'received' : message.userId !== player?.id, 'sent' : message.userId === player?.id}">
+        <span *ngIf="message.userId !== player?.id" class="pop-message-user" [ngStyle]="{'color': message.color}">{{
+          message.userName}}</span>
+        <span>{{message.text}}</span>
+
       </div>
 
     </div>
-    <div class="chat-form">
-      <input type="text" id="chat-input" placeholder="Escribe un mensaje...">
-      <button id="send-button"><i class="bi bi-send"></i></button>
-    </div>
+    <form (ngSubmit)="sendMessage()">
+      <div class="chat-form">
+        <input type="text" id="chat-input" name="stringMessage" [(ngModel)]="stringMessage" placeholder="Escribe un mensaje..." autocomplete="off">
+        <button type="submit" id="send-button"><i class="bi bi-send"></i></button>
+      </div>
+    </form>
   </div>
 </div>

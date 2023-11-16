@@ -7,6 +7,8 @@ import { PlayerModule } from './player.module';
 import { Game } from './game.entity';
 import { Player } from './player.entity';
 import { AppGateway } from './app.gateway';
+import { Message } from './message.entity';
+import { MessageModule } from './message.module';
 
 @Module({
   imports: [
@@ -17,11 +19,12 @@ import { AppGateway } from './app.gateway';
       username: 'martin', // Usuario por defecto en XAMPP
       password: 'abc123.,',     // Contraseña vacía por defecto en XAMPP
       database: 'tres_en_raya_db', // El nombre de tu base de datos
-      entities: [Game, Player], // Ubicación de tus entidades
+      entities: [Game, Player, Message], // Ubicación de tus entidades
       synchronize: true, // Esto creará/modificará las tablas automáticamente según tus entidades. Útil en desarrollo pero peligroso en producción.
     }),
     GameModule,
     PlayerModule,
+    MessageModule,
   ],
   controllers: [AppController],
   providers: [AppService, AppGateway],

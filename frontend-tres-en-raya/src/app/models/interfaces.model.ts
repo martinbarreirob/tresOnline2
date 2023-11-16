@@ -11,6 +11,13 @@ export interface Game {
 export interface Player {
   id: number;
   nombre: string;
-  socketId: number
+  socketId?: number
 }
 
+export interface Message {
+  id?: number;
+  text: string;
+  userId: number;
+  color?: string;
+  userName?: string;
+}
