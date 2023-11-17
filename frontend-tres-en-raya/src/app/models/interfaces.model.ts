@@ -20,4 +20,6 @@ export interface Message {
   userId: number;
   color?: string;
   userName?: string;
+  date?: Date;
+  time?: string;
 }

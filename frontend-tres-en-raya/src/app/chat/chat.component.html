@@ -14,13 +14,14 @@
       <div class="chat-title">{{ opponent?.nombre }}</div>
       <i class="bi bi-caret-down-fill" (click)="toggleChat()"></i>
     </div>
-    <div class="chat-messages" #chatMessages>
+    <div class="chat-messages" #chatMessages >
 
       <div *ngFor="let message of messages" class="pop-message"
         [ngClass]="{'received' : message.userId !== player?.id, 'sent' : message.userId === player?.id}">
         <span *ngIf="message.userId !== player?.id" class="pop-message-user" [ngStyle]="{'color': message.color}">{{
           message.userName}}</span>
         <span>{{message.text}}</span>
+        <span>{{message.time}}</span>
 
       </div>
 

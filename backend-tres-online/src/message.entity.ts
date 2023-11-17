@@ -18,4 +18,10 @@ export class Message {
 
   @Column('varchar')
   userName?: string | null;
+
+  @Column('timestamp')
+  date?: Date | null;
+
+  @Column('varchar')
+  time?: string | null;
 }

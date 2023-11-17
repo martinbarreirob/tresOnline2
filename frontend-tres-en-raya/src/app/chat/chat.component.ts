@@ -1,5 +1,4 @@
-import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { AfterViewChecked, Component, OnInit } from '@angular/core';
 import { PlayerService } from '../player.service';
 import { Player } from '../models/interfaces.model';
 import { Message } from '../models/interfaces.model';
@@ -12,8 +11,7 @@ import { SocketService } from '../socket.service';
   styleUrls: ['./chat.component.css']
 })
 
-export class ChatComponent implements OnInit, AfterViewInit {
-  @ViewChild('chatMessages') private chatMessagesContainer: ElementRef;
+export class ChatComponent implements OnInit, AfterViewChecked {
 
   public isOpen = false;
   public player: Player | null = this.playerService.getCurrentPlayer();
@@ -21,7 +19,8 @@ export class ChatComponent implements OnInit, AfterViewInit {
   public opponent: Player | null = this.playerService.getCurrentOpponent();
   public messages: Message[] = [];
   private baseUrl: string = 'http://192.168.0.37:3000/';
-  public colors = ["#1B1B1B", // Negro
+  public colors = [
+    "#1B1B1B", // Negro
     "#0057B8", // Azul
     "#008000", // Verde
     "#FFD700", // Dorado
@@ -38,40 +37,30 @@ export class ChatComponent implements OnInit, AfterViewInit {
 
   constructor(private http: HttpClient, private socketService: SocketService, private playerService: PlayerService,) { }
 
-  ngAfterViewInit(): void {
+
+  ngAfterViewChecked() {
+    let d = document.querySelector('.chat-messages');
+    if (d) {
+      d.scrollTop = d.scrollHeight;
+    }
+  }
+
+  ngOnInit(): void {
     this.getMessages();
-    this.scrollToBottom();
+    this.socketListeners()
+  }
+
+  socketListeners(): void {
+    this.socketService.listen('player-join-room').subscribe((data: any) => {
+      console.log('player-join', data);
+    });
 
     this.socketService.listen('messageEmited').subscribe((message: any) => {
       this.messages.push(message);
-      this.scrollToBottom();
     });
   }
 
-  private scrollToBottom(): void {
-    try {
-      this.chatMessagesContainer.nativeElement.scrollTop = this.chatMessagesContainer.nativeElement.scrollHeight;
-    } catch(err) { }
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-  ngOnInit(): void {
-
-  }
-
   toggleChat(): void {
-    console.log(this.isOpen);
-
     this.isOpen = !this.isOpen;
   }
 
@@ -101,10 +90,15 @@ export class ChatComponent implements OnInit, AfterViewInit {
   }
 
   sendMessage(): void {
+    const data = new Date();
+    const formattedTime = `${data.getHours()}:${data.getMinutes().toString().padStart(2, '0')}`;
+
     const message: Message = {
       text: this.stringMessage,
       userId: this.player!.id,
       userName: this.player!.nombre,
+      date: data,
+      time: formattedTime,
     }
 
     this.http.post<Message>(`${this.baseUrl}message/`, message).subscribe((message: Message) => {
