@@ -32,21 +32,18 @@ export class ListGamesComponent implements OnInit, OnDestroy {
   user: any;
   userLogged: Player | undefined;
 
-
   constructor(private http: HttpClient, private socketService: SocketService, private playerService: PlayerService) { }
 
   ngOnInit(): void {
     this.user = this.playerService.getCurrentPlayer();
 
     this.getAllGamesAvaliable();
-
     this.setupSocketListeners();
   }
 
   ngOnDestroy(): void {
 
   }
-
 
   private setupSocketListeners(): void {
     //Escucha cuando se creó un juego
@@ -62,13 +59,12 @@ export class ListGamesComponent implements OnInit, OnDestroy {
     });
 
     this.socketService.listen('clear-game').subscribe((data: any) => {
-      console.log('listen clear-game', data);
-
       const gameData = {
         status: 1,
       }
-      this.games = this.games.filter(game => game.id !== data);
-      this.http.put<Game>(`${this.baseUrl}game/${data}`, gameData).subscribe({})
+      this.http.put<Game>(`${this.baseUrl}game/${data}`, gameData).subscribe(()=>{
+        this.getAllGamesAvaliable();
+      });
     });
 
     this.socketService.listen('clear-own-game').subscribe((data: any) => {
@@ -79,11 +75,7 @@ export class ListGamesComponent implements OnInit, OnDestroy {
         this.games = this.games.filter(g => g.id !== game.id);
       })
     });
-
   }
-
-
-
 
   getAllGamesAvaliable(): void {
     this.http.get<Game[]>(`${this.baseUrl}game/allFreeGames`).subscribe((games: Game[]) => {
@@ -110,8 +102,8 @@ export class ListGamesComponent implements OnInit, OnDestroy {
       turn: 'X',
     }
     this.http.post<Game>(`${this.baseUrl}game/`, gameData).subscribe((game: Game) => {
-
       this.socketService.emit('create-game', game);
+      this.playerService.setCurrentGame(game.id);
       this.emitEnterGame.emit();
     });
   }
@@ -123,7 +115,9 @@ export class ListGamesComponent implements OnInit, OnDestroy {
     }
     this.http.put<Game>(`${this.baseUrl}game/${gameId}`, gameData).subscribe((game: Game) => {
       this.socketService.emit('player-join-game', game);
+      this.playerService.setCurrentGame(game.id);
       this.socketService.emit('list-games', game);
+
       this.emitEnterGame.emit();
     })
   };

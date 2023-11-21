@@ -24,4 +24,8 @@ export class PlayerService {
   getCurrentOpponent(): Player | null {
     return this.currentOpponent;
   }
+
+  setCurrentGame(gameId: number): void {
+    this.currentPlayer!.roomId = gameId;
+  }
 }

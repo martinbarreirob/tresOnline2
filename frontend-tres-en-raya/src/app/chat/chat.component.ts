@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, OnInit, HostListener, ElementRef } from '@angular/core';
 import { PlayerService } from '../player.service';
 import { Player } from '../models/interfaces.model';
 import { Message } from '../models/interfaces.model';
@@ -13,13 +13,13 @@ import { SocketService } from '../socket.service';
 
 export class ChatComponent implements OnInit, AfterViewChecked {
 
-  public isOpen = false;
+  public isOpen: boolean = true;
   public player: Player | null = this.playerService.getCurrentPlayer();
   //public player: Player | null = { id: 1153, nombre: 'Martin', socketId: 0 };
   public opponent: Player | null = this.playerService.getCurrentOpponent();
   public messages: Message[] = [];
   private baseUrl: string = 'http://192.168.0.37:3000/';
-  public colors = [
+  public colors: string[] = [
     "#1B1B1B", // Negro
     "#0057B8", // Azul
     "#008000", // Verde
@@ -34,8 +34,28 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   ];
   public stringMessage: string = "";
 
+  @HostListener('document:click', ['$event'])
+  clickout(event: any): void{
+    if(this.isOpen === true && !this.eRef.nativeElement.contains(event.target)) {
+      this.isOpen = false;
+    }
+  }
 
-  constructor(private http: HttpClient, private socketService: SocketService, private playerService: PlayerService,) { }
+  @HostListener('click', ['$event'])
+  clickin(event: any): void{
+    event.stopPropagation();
+
+
+
+    if(this.isOpen === false) {
+      this.isOpen = true;
+    }
+    console.log(event.target.attributes);
+
+  }
+
+
+  constructor(private http: HttpClient, private socketService: SocketService, private playerService: PlayerService, private eRef: ElementRef) { }
 
 
   ngAfterViewChecked() {
@@ -61,7 +81,10 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   }
 
   toggleChat(): void {
-    this.isOpen = !this.isOpen;
+    console.log('toggleChat');
+
+    this.isOpen = false;
+
   }
 
   getRandomColor(): string {
@@ -77,17 +100,8 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     return
   }
 
-  getMessages() {
-    this.http.get<Message[]>(`${this.baseUrl}message`).subscribe((messages: Message[]) => {
 
-      this.messages = messages.map(message => ({
-        ...message,
-        color: this.getRandomColor(),
-        userName: message.userName,
-      }));
 
-    });
-  }
 
   sendMessage(): void {
     const data = new Date();
@@ -99,14 +113,27 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       userName: this.player!.nombre,
       date: data,
       time: formattedTime,
+      roomId: this.player!.roomId,
     }
 
     this.http.post<Message>(`${this.baseUrl}message/`, message).subscribe((message: Message) => {
       this.messages.push(message);
+      //emito el mensaje
       this.socketService.emit('messageEmited', message);
     })
 
     this.stringMessage = ""
   }
+  getMessages() {
+    // this.http.get<Message[]>(`${this.baseUrl}message/${this.player!.roomId}`).subscribe((messages: Message[]) => {
+      this.http.get<Message[]>(`${this.baseUrl}message`).subscribe((messages: Message[]) => {
+      this.messages = messages.map(message => ({
+        ...message,
+        color: this.getRandomColor(),
+        userName: message.userName,
+      }));
 
+      return this.messages;
+    });
+  }
 }

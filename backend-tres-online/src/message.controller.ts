@@ -13,6 +13,11 @@ export class MessageController {
     return this.messageService.findAllMessagesWithPlayers();
   }
 
+  @Get(':id')
+  findRoomMessages(@Param('id') id: number): Promise<Message[]> {
+    return this.messageService.findRoomMessagesWithPlayers(id);
+  }
+
  @Post()
   create(@Body() messageData: { text: string, userId: number }): Promise<Message> {
     return this.messageService.create(messageData);

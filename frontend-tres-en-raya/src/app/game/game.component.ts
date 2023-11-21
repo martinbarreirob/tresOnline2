@@ -99,6 +99,8 @@ export class GameComponent implements OnInit, OnDestroy {
           this.playerService.setCurrentOpponent(opponent);
         });
       }
+      console.log('opo discon', this.opponentDisconnected);
+
     });
 
     this.socketService.listen<Game>('updated-game').subscribe((game: Game) => {
@@ -140,6 +142,8 @@ export class GameComponent implements OnInit, OnDestroy {
 
 
     this.socketService.listen('player-disconnected').subscribe(()=>{
+      console.log("Jugador desconectado");
+
       this.opponentDisconnected = true;
     })
   }
@@ -223,15 +227,16 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   updateWinner(winner: string): void {
+    console.log('Ganador: ', winner);
     let gameData: any;
 
     if (winner === 'X') {
       gameData = {
-        winX: ++this.game.winX
+        winX: this.game.winX +1
       }
     } else if (winner === 'O') {
       gameData = {
-        winO: ++this.game.winO
+        winO: this.game.winO +1
       }
     }
 
@@ -283,8 +288,7 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   emitLogout(): void {
-    console.log('emitLgout en game.ts');
-
+    this.socketService.emitDisconnect('leaveGame');
     this.buttonLogout.emit();
   }
 }

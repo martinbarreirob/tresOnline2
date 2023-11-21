@@ -11,7 +11,8 @@ export interface Game {
 export interface Player {
   id: number;
   nombre: string;
-  socketId?: number
+  roomId?: number;
+
 }
 
 export interface Message {
@@ -22,4 +23,5 @@ export interface Message {
   userName?: string;
   date?: Date;
   time?: string;
+  roomId?: number;
 }

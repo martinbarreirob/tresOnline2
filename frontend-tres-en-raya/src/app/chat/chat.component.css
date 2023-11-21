@@ -14,7 +14,7 @@
   display: flex;
   flex-direction: column;
   margin: 0 auto;
-  border-radius: 10px;
+  border-radius: 8px;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
   overflow: hidden;
   transition: width 0.7s ease, height 0.4s ease;
@@ -23,9 +23,9 @@
 .chat-container.closed {
   width: 8em;
   height: 3em;
-  background-color: rgb(244, 244, 244);
+  background-color: rgb(255, 255, 255);
   padding: 10px;
-  border-radius: 10px;
+  border-radius: 8px;
   overflow: hidden;
   cursor: pointer;
   color: black;
@@ -135,9 +135,15 @@
 }
 
 .pop-message.sent {
-  background-color: rgb(223, 232, 252);
+  background-color: rgb(241, 246, 255);
   align-self: flex-end;
   text-align: start;
+}
+
+.pop-message span.time {
+  color: gray;
+  text-align: end;
+  font-size : 0.7em;
 }
 
 
@@ -162,4 +168,15 @@
   justify-content: center;
   align-items: center;
   gap: 0.5em;
+}
+
+.row-message{
+  display: flex;
+}
+
+.image{
+  background-color: purple;
+  border-radius: 100%;
+  width: 15px;
+  height: 15px;
 }

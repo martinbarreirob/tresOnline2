@@ -25,6 +25,15 @@ export class MessageService {
     return this.messageRepository.query(consulta);
   }
 
+  async findRoomMessagesWithPlayers(id: number): Promise<any[]> {
+    const consulta = `
+        SELECT message.*, player.nombre as userName FROM message
+        LEFT JOIN player ON message.userId = player.id WHERE message.roomId = ${id}
+      `;
+
+    return this.messageRepository.query(consulta);
+  }
+
   async create(data: { text: string, userId: number }): Promise<Message> {
     const message = this.messageRepository.create(data);
     return await this.messageRepository.save(message);

@@ -11,5 +11,5 @@ export class Player {
   nombre?: string | null;
 
   @Column('int')
-  socketId?: number | null;
+  roomId?: number | null;
 }

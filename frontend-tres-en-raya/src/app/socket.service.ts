@@ -19,10 +19,14 @@ export class SocketService {
     this.socket.emit(eventName, data);
   }
 
+  emitDisconnect(eventName: string) {
+    this.socket.emit(eventName);
+  }
+
   // Método para escuchar eventos desde el servidor
   listen<T>(eventName: string): Observable<T> {
     return new Observable((subscriber) => {
-      this.socket.on(eventName, (data:any) => {
+      this.socket.on(eventName, (data: any) => {
         subscriber.next(data);
       });
     });

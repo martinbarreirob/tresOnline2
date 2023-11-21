@@ -24,4 +24,7 @@ export class Message {
 
   @Column('varchar')
   time?: string | null;
+
+  @Column('int')
+  roomId?: number | null;
 }

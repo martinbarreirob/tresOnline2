@@ -1,7 +1,7 @@
 <!-- Contenedor principal que empieza como un botón y se expande a ser el chat -->
-<div class="chat-container" [ngClass]="{'closed': !isOpen, 'open': isOpen}">
+<div app-chat class="chat-container" [ngClass]="{'closed': !isOpen, 'open': isOpen}">
   <!-- Si el chat está cerrado, muestra solo el icono -->
-  <div *ngIf="!isOpen" class="button-chat" (click)="toggleChat()">
+  <div *ngIf="!isOpen" class="button-chat">
     <div class="button-chat-text">Abrir Chat</div>
     <div class="button-chat-icon">
       <i class="bi bi-chat"></i>
@@ -12,23 +12,27 @@
   <div *ngIf="isOpen" class="chat-content">
     <div class="chat-header">
       <div class="chat-title">{{ opponent?.nombre }}</div>
-      <i class="bi bi-caret-down-fill" (click)="toggleChat()"></i>
+      <i dropdownButton down-button class="bi bi-caret-down-fill"></i>
     </div>
-    <div class="chat-messages" #chatMessages >
+    <div class="chat-messages" #chatMessages>
+      <div *ngFor="let message of messages" class="row-message">
+        <span *ngIf="message.userId !== player?.id" class="image"></span>
+        <div class="pop-message"
+          [ngClass]="{'received' : message.userId !== player?.id, 'sent' : message.userId === player?.id}">
 
-      <div *ngFor="let message of messages" class="pop-message"
-        [ngClass]="{'received' : message.userId !== player?.id, 'sent' : message.userId === player?.id}">
-        <span *ngIf="message.userId !== player?.id" class="pop-message-user" [ngStyle]="{'color': message.color}">{{
-          message.userName}}</span>
-        <span>{{message.text}}</span>
-        <span>{{message.time}}</span>
+          <span *ngIf="message.userId !== player?.id" class="pop-message-user" [ngStyle]="{'color': message.color}">{{
+            message.userName}}</span>
+          <span>{{message.text}}</span>
+          <span class="time">{{message.time}}</span>
 
+        </div>
       </div>
 
     </div>
     <form (ngSubmit)="sendMessage()">
       <div class="chat-form">
-        <input type="text" id="chat-input" name="stringMessage" [(ngModel)]="stringMessage" placeholder="Escribe un mensaje..." autocomplete="off">
+        <input type="text" id="chat-input" name="stringMessage" [(ngModel)]="stringMessage"
+          placeholder="Escribe un mensaje..." autocomplete="off">
         <button type="submit" id="send-button"><i class="bi bi-send"></i></button>
       </div>
     </form>

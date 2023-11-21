@@ -27,6 +27,8 @@ export class AppGateway {
   handleCreateGame(client: Socket, payload: any): void {
     console.log(`${client.id} created the game ${payload.id}`);
     this.roomByClientId[client.id] = payload.id;
+
+    
     client.join(payload.id);
     this.server.emit('create-game', payload);
   }
@@ -85,6 +87,8 @@ export class AppGateway {
   }
 
   //Disconnect 
+
+  @SubscribeMessage('leaveGame')
   handleDisconnect(client: Socket) {
     console.log(`Client disconnected: ${client.id}`);
     const roomId = this.getRoomId(client.id);
@@ -95,17 +99,20 @@ export class AppGateway {
     }
   }
 
+  
+  private getRoomId(clientId: string): string | null {
+    console.log('function get room');
+    return this.roomByClientId[clientId];
+    
+  }
 
+  
   //Message events
   @SubscribeMessage('messageEmited')
   handleMessageEdited(client: Socket, mensaje: any): void {
     console.log(`User ${client.id} send a message.`);
 
-    client.broadcast.emit('messageEmited', mensaje);
+    client.broadcast.to(mensaje.roomId).emit('messageEmited', mensaje);
 
-  }
-
-  private getRoomId(clientId: string): string | null {
-    return this.roomByClientId[clientId] || null;
   }
 }

@@ -1,0 +1,30 @@
+async function getMessages() {
+    // Suponiendo que fetchMessages() es una función que obtiene los mensajes de la base de datos
+    const messages = await fetchMessages();
+    const formattedMessages = [];
+
+    let lastDate = null;
+
+    messages.forEach(message => {
+        const messageDate = new Date(message.fecha_hora); // Asumiendo que tus mensajes tienen una propiedad fecha_hora
+        const dateKey = messageDate.toLocaleDateString();
+
+        // Verificar si el día o mes ha cambiado
+        if (lastDate !== dateKey) {
+            formattedMessages.push({
+                type: 'dateIndicator',
+                content: messageDate.toLocaleDateString('es', { day: 'numeric', month: 'long' })
+            });
+            lastDate = dateKey;
+        }
+
+        formattedMessages.push(message);
+    });
+
+    return formattedMessages;
+}
+
+
+Imagenes usuario
+
+clicar fuera
