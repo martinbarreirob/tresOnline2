@@ -12,13 +12,13 @@ import { SocketService } from '../socket.service';
 })
 
 export class ChatComponent implements OnInit, AfterViewChecked {
-
-  public isOpen: boolean = true;
+  //public player: Player | null = { id: 1153, nombre: 'Martin' };
+  private baseUrl: string = 'http://192.168.0.37:3000/';
+  public isOpen: boolean = false;
   public player: Player | null = this.playerService.getCurrentPlayer();
-  //public player: Player | null = { id: 1153, nombre: 'Martin', socketId: 0 };
   public opponent: Player | null = this.playerService.getCurrentOpponent();
   public messages: Message[] = [];
-  private baseUrl: string = 'http://192.168.0.37:3000/';
+  public groupedMessages: any[] = [];
   public colors: string[] = [
     "#1B1B1B", // Negro
     "#0057B8", // Azul
@@ -34,28 +34,32 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   ];
   public stringMessage: string = "";
 
+
   @HostListener('document:click', ['$event'])
-  clickout(event: any): void{
-    if(this.isOpen === true && !this.eRef.nativeElement.contains(event.target)) {
+  clickout(event: any): void {
+    event.stopPropagation();
+    if (this.isOpen === true && !this.eRef.nativeElement.contains(event.target)) {
       this.isOpen = false;
     }
   }
 
   @HostListener('click', ['$event'])
-  clickin(event: any): void{
+  clickin(event: any): void {
     event.stopPropagation();
+    console.log('clickin');
 
-
-
-    if(this.isOpen === false) {
+    if (this.isOpen === false) {
       this.isOpen = true;
     }
-    console.log(event.target.attributes);
-
   }
 
 
   constructor(private http: HttpClient, private socketService: SocketService, private playerService: PlayerService, private eRef: ElementRef) { }
+
+  ngOnInit(): void {
+    this.getMessages();
+    this.socketListeners()
+  }
 
 
   ngAfterViewChecked() {
@@ -65,11 +69,6 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  ngOnInit(): void {
-    this.getMessages();
-    this.socketListeners()
-  }
-
   socketListeners(): void {
     this.socketService.listen('player-join-room').subscribe((data: any) => {
       console.log('player-join', data);
@@ -77,14 +76,15 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
     this.socketService.listen('messageEmited').subscribe((message: any) => {
       this.messages.push(message);
+      this.groupedMessages = this.groupByDate(this.messages);
     });
   }
 
-  toggleChat(): void {
+  toggleChat(event: Event): void {
     console.log('toggleChat');
 
     this.isOpen = false;
-
+    event?.stopPropagation()
   }
 
   getRandomColor(): string {
@@ -104,6 +104,9 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
 
   sendMessage(): void {
+    if (this.stringMessage === "") {
+      return;
+    }
     const data = new Date();
     const formattedTime = `${data.getHours()}:${data.getMinutes().toString().padStart(2, '0')}`;
 
@@ -119,21 +122,59 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.http.post<Message>(`${this.baseUrl}message/`, message).subscribe((message: Message) => {
       this.messages.push(message);
       //emito el mensaje
+      this.groupedMessages = this.groupByDate(this.messages);
       this.socketService.emit('messageEmited', message);
     })
 
     this.stringMessage = ""
   }
-  getMessages() {
-    // this.http.get<Message[]>(`${this.baseUrl}message/${this.player!.roomId}`).subscribe((messages: Message[]) => {
-      this.http.get<Message[]>(`${this.baseUrl}message`).subscribe((messages: Message[]) => {
+
+
+  getMessages(): any {
+    this.http.get<Message[]>(`${this.baseUrl}message/${this.player!.roomId}`).subscribe((messages: Message[]) => {
+    //this.http.get<Message[]>(`${this.baseUrl}message`).subscribe((messages: Message[]) => {
       this.messages = messages.map(message => ({
         ...message,
         color: this.getRandomColor(),
         userName: message.userName,
       }));
 
-      return this.messages;
+      this.groupedMessages = this.groupByDate(this.messages);
     });
   }
+
+
+  groupByDate(messages: Message[]) {
+    // Función para formatear la fecha en un formato legible (ej: '2023-03-15')
+    const formatDate = (dateString: string) => {
+      const date = new Date(dateString);
+      return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+    };
+
+    // Reductor para agrupar mensajes por fecha
+    const customReducer = (accumulator: any, currentMessage: any) => {
+      // Extraemos la fecha del mensaje y la formateamos
+      const dateKey = formatDate(currentMessage.date);
+
+      // Si no existe un grupo para esta fecha, lo creamos
+      if (!accumulator[dateKey]) {
+        accumulator[dateKey] = [];
+      }
+
+      // Agregamos el mensaje al grupo correspondiente
+      accumulator[dateKey].push(currentMessage);
+
+      return accumulator;
+    };
+
+
+
+    // Usamos reduce para agrupar los mensajes
+    const groupedMessages = messages.reduce(customReducer, {});
+
+    return groupedMessages;
+  }
+
+
+
 }

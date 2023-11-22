@@ -12,22 +12,37 @@
   <div *ngIf="isOpen" class="chat-content">
     <div class="chat-header">
       <div class="chat-title">{{ opponent?.nombre }}</div>
-      <i dropdownButton down-button class="bi bi-caret-down-fill"></i>
+      <i dropdownButton down-button class="bi bi-caret-down-fill" (click)="toggleChat($event)"></i>
     </div>
     <div class="chat-messages" #chatMessages>
-      <div *ngFor="let message of messages" class="row-message">
-        <span *ngIf="message.userId !== player?.id" class="image"></span>
-        <div class="pop-message"
-          [ngClass]="{'received' : message.userId !== player?.id, 'sent' : message.userId === player?.id}">
 
-          <span *ngIf="message.userId !== player?.id" class="pop-message-user" [ngStyle]="{'color': message.color}">{{
-            message.userName}}</span>
-          <span>{{message.text}}</span>
-          <span class="time">{{message.time}}</span>
+      <div *ngFor="let group of groupedMessages | keyvalue">
+        <!-- Mostrar la fecha del grupo -->
+        <div class="row-message">
+          <div class="date-group">{{ group.key }}</div>
+        </div>
 
+        <!-- Iterar sobre los mensajes dentro del grupo -->
+        <div *ngFor="let message of group.value" class="row-message">
+          <!-- Contenido de cada mensaje, similar a lo que ya tienes -->
+          <div *ngIf="message.userId !== player?.id" class="image">
+            <div class="pop-message-user-name">
+              {{ message.userName!.slice(0, 2) }}
+            </div>
+          </div>
+
+          <div class="pop-message"
+            [ngClass]="{'received' : message.userId !== player?.id, 'sent' : message.userId === player?.id}">
+            <div class="body">
+              <span *ngIf="message.userId !== player?.id" class="pop-message-user" [ngStyle]="{'color': message.color}">
+                {{ message.userName }}
+              </span>
+              <span>{{message.text}}</span>
+            </div>
+            <span class="time">{{message.time}}</span>
+          </div>
         </div>
       </div>
-
     </div>
     <form (ngSubmit)="sendMessage()">
       <div class="chat-form">
