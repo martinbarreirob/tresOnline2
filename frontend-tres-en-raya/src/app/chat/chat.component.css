@@ -129,6 +129,13 @@
   position: relative;
 }
 
+.pop-message ::before{
+  width: 500px;
+  height: 500px;
+  background-color: red;
+  position: absolute;
+}
+
 .pop-message-user{
   font-weight: 500;
   font-size: 0.9em;
@@ -227,9 +234,29 @@
   font-weight: 300;
 }
 
-.row-message:has(.date-group){
+.row-message:has(.pop-notifies){
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 0.5em;
+  text-align: center;
+}
+
+.join-notify{
+  padding: 5px 10px;
+  margin: 5px 0;
+  border-radius: 10px;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+  width: max-content;
+  max-width: 80%;
+  display: flex;
+  flex-direction: row;
+  position: fixed;
+  z-index: 9999;
+  background-color: white;
+  font-weight: 300;
+}
+
+.icon-notify{
+  font-size: 20px;
 }

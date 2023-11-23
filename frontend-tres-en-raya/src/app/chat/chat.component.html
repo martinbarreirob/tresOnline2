@@ -11,15 +11,22 @@
   <!-- Contenido del chat que se muestra cuando está abierto -->
   <div *ngIf="isOpen" class="chat-content">
     <div class="chat-header">
-      <div class="chat-title">{{ opponent?.nombre }}</div>
+      <div class="chat-title"></div>
       <i dropdownButton down-button class="bi bi-caret-down-fill" (click)="toggleChat($event)"></i>
     </div>
     <div class="chat-messages" #chatMessages>
+      <div>
+        <div class="row-message">
+          <div class="pop-notifies join-notify">Carlitos joined time to talk!
+            <i class="bi bi-x notify-icon"></i>
+          </div>
+        </div>
+      </div>
 
       <div *ngFor="let group of groupedMessages | keyvalue">
         <!-- Mostrar la fecha del grupo -->
         <div class="row-message">
-          <div class="date-group">{{ group.key }}</div>
+          <div class="pop-notifies date-group">{{ group.key }}</div>
         </div>
 
         <!-- Iterar sobre los mensajes dentro del grupo -->

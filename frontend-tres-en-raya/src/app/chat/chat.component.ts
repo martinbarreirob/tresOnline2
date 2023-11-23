@@ -1,6 +1,6 @@
 import { AfterViewChecked, Component, OnInit, HostListener, ElementRef } from '@angular/core';
 import { PlayerService } from '../player.service';
-import { Player } from '../models/interfaces.model';
+import { Game, Player } from '../models/interfaces.model';
 import { Message } from '../models/interfaces.model';
 import { HttpClient } from '@angular/common/http';
 import { SocketService } from '../socket.service';
@@ -14,7 +14,7 @@ import { SocketService } from '../socket.service';
 export class ChatComponent implements OnInit, AfterViewChecked {
   //public player: Player | null = { id: 1153, nombre: 'Martin' };
   private baseUrl: string = 'http://192.168.0.37:3000/';
-  public isOpen: boolean = false;
+  public isOpen: boolean = true;
   public player: Player | null = this.playerService.getCurrentPlayer();
   public opponent: Player | null = this.playerService.getCurrentOpponent();
   public messages: Message[] = [];
@@ -46,7 +46,6 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   @HostListener('click', ['$event'])
   clickin(event: any): void {
     event.stopPropagation();
-    console.log('clickin');
 
     if (this.isOpen === false) {
       this.isOpen = true;
@@ -57,8 +56,10 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   constructor(private http: HttpClient, private socketService: SocketService, private playerService: PlayerService, private eRef: ElementRef) { }
 
   ngOnInit(): void {
+    this.socketListeners();
+    this.joinChat();
     this.getMessages();
-    this.socketListeners()
+
   }
 
 
@@ -70,8 +71,9 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   }
 
   socketListeners(): void {
-    this.socketService.listen('player-join-room').subscribe((data: any) => {
-      console.log('player-join', data);
+    this.socketService.listen('player-join-chat').subscribe((data: any) => {
+      this.opponent = this.playerService.getCurrentOpponent();
+      console.log('player-join-chat');
     });
 
     this.socketService.listen('messageEmited').subscribe((message: any) => {
@@ -80,11 +82,19 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     });
   }
 
-  toggleChat(event: Event): void {
-    console.log('toggleChat');
+  //Pruebo a lanzar un evento en el inico de componente para subcribirme al listner de player-join-room para notificar al otro usuario cuando se une alguien a la sala.
+  joinChat(): void{
+    this.http.get<Game>(`${this.baseUrl}game/${this.player!.roomId}`).subscribe((game: Game) => {
+      this.socketService.emit('player-join-chat', game);
+      console.log('joinChat');
 
+    });
+
+  }
+
+  toggleChat(event: Event): void {
     this.isOpen = false;
-    event?.stopPropagation()
+    event.stopPropagation()
   }
 
   getRandomColor(): string {
@@ -163,10 +173,8 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
       // Agregamos el mensaje al grupo correspondiente
       accumulator[dateKey].push(currentMessage);
-
       return accumulator;
     };
-
 
 
     // Usamos reduce para agrupar los mensajes
@@ -174,7 +182,4 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
     return groupedMessages;
   }
-
-
-
 }

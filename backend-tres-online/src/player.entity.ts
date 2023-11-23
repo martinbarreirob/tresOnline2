@@ -10,6 +10,5 @@ export class Player {
   @Column({ type: 'varchar', length: 100, nullable: true })
   nombre?: string | null;
 
-  @Column('int')
-  roomId?: number | null;
+
 }

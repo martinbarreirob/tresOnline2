@@ -6,15 +6,15 @@ import { Entity, PrimaryGeneratedColumn, Column, } from 'typeorm';
 export class Message {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Column({ type: 'varchar', length: 10000, nullable: true })
-  text?: string | null;
-
+  
   @Column('int')
   userId: number;
-
+  
   @Column('int')
-  sala?: number | null;
+  roomId?: number | null;
+  
+  @Column({ type: 'varchar', length: 10000})
+  text?: string | null;
 
   @Column('varchar')
   userName?: string | null;
@@ -25,6 +25,5 @@ export class Message {
   @Column('varchar')
   time?: string | null;
 
-  @Column('int')
-  roomId?: number | null;
+
 }

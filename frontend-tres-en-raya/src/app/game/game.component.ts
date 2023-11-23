@@ -99,8 +99,6 @@ export class GameComponent implements OnInit, OnDestroy {
           this.playerService.setCurrentOpponent(opponent);
         });
       }
-      console.log('opo discon', this.opponentDisconnected);
-
     });
 
     this.socketService.listen<Game>('updated-game').subscribe((game: Game) => {

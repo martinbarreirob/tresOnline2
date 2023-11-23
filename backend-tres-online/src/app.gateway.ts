@@ -44,10 +44,16 @@ export class AppGateway {
 
   @SubscribeMessage('player-join-game')
   handleJoinGame(client: Socket, payload: any): void {
-    console.log(`${payload} joined the game ${payload.id}`);
-    this.roomByClientId[client.id] = payload.id;
+    console.log(`${payload.id} joined the game ${payload.id}`);
     client.join(payload.id);
     this.server.to(payload.id).emit('player-join-game', payload);
+  }
+
+  @SubscribeMessage('player-join-chat')
+  handleJoinChat(client: Socket, payload: any): void {
+    console.log(`${payload.id} joined the chat ${payload.id}`);
+    client.join(payload.id);
+    this.server.to(payload.id).emit('player-join-chat', payload);
   }
 
   @SubscribeMessage('updated-game')
