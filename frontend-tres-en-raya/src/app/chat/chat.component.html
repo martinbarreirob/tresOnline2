@@ -14,15 +14,13 @@
       <div class="chat-title"></div>
       <i dropdownButton down-button class="bi bi-caret-down-fill" (click)="toggleChat($event)"></i>
     </div>
-    <div class="chat-messages" #chatMessages>
-      <div>
-        <div class="row-message">
-          <div class="pop-notifies join-notify">Carlitos joined time to talk!
-            <i class="bi bi-x notify-icon"></i>
-          </div>
-        </div>
-      </div>
 
+    <div class="join-notify">
+      <strong>Aviso: </strong> Chat para investigadores del estudio. Para contactar con pInvestiga pulse <a
+        href="#">aquí</a>.
+    </div>
+
+    <div class="chat-messages" #chatMessages>
       <div *ngFor="let group of groupedMessages | keyvalue">
         <!-- Mostrar la fecha del grupo -->
         <div class="row-message">
