@@ -14,24 +14,11 @@ import { SocketService } from '../socket.service';
 export class ChatComponent implements OnInit, AfterViewChecked {
   //public player: Player | null = { id: 1153, nombre: 'Martin' };
   private baseUrl: string = 'http://192.168.0.37:3000/';
-  public isOpen: boolean = true;
+  public isOpen: boolean = false;
   public player: Player | null = this.playerService.getCurrentPlayer();
   public opponent: Player | null = this.playerService.getCurrentOpponent();
   public messages: Message[] = [];
   public groupedMessages: any[] = [];
-  public colors: string[] = [
-    "#1B1B1B", // Negro
-    "#0057B8", // Azul
-    "#008000", // Verde
-    "#FFD700", // Dorado
-    "#FF8C00", // Naranja oscuro
-    "#D22B2B", // Rojo
-    "#551A8B", // Púrpura
-    "#008B8B", // Cyan oscuro
-    "#A52A2A", // Marrón
-    "#A52A2A", // Marrón
-    "#2E8B57"
-  ];
   public stringMessage: string = "";
 
 
@@ -82,6 +69,8 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
   //Pruebo a lanzar un evento en el inico de componente para subcribirme al listner de player-join-room para notificar al otro usuario cuando se une alguien a la sala.
   joinChat(): void{
+    console.log();
+
     this.http.get<Game>(`${this.baseUrl}game/${this.player!.roomId}`).subscribe((game: Game) => {
       this.socketService.emit('player-join-chat', game);
       console.log('joinChat');
@@ -91,10 +80,6 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   toggleChat(event: Event): void {
     this.isOpen = false;
     event.stopPropagation()
-  }
-
-  getRandomColor(): string {
-    return this.colors[Math.floor(Math.random() * this.colors.length)];
   }
 
   getPlayerName(id: number): string | undefined {
@@ -139,7 +124,6 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     //this.http.get<Message[]>(`${this.baseUrl}message`).subscribe((messages: Message[]) => {
       this.messages = messages.map(message => ({
         ...message,
-        color: this.getRandomColor(),
         userName: message.userName,
       }));
 

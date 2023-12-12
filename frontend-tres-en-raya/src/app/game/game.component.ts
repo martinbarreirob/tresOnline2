@@ -151,16 +151,6 @@ export class GameComponent implements OnInit, OnDestroy {
     this.playingFor = this.game.playerXid === this.player?.id ? 'X' : 'O';
   }
 
-  winnerMessage(winner: string | null): string {
-    if (winner === null) {
-      return this.mensajesResultado[2];
-    }
-    if (winner === this.playingFor) {
-      return this.mensajesResultado[0];
-    } else {
-      return this.mensajesResultado[1];
-    }
-  }
 
   selectOneUser(playerId: number): Observable<Player> {
     return this.http.get<Player>(`${this.baseUrl}player/${playerId}`);
@@ -222,6 +212,17 @@ export class GameComponent implements OnInit, OnDestroy {
     }
 
     return null;
+  }
+
+  winnerMessage(winner: string | null): string {
+    if (winner === null) {
+      return this.mensajesResultado[2];
+    }
+    if (winner === this.playingFor) {
+      return this.mensajesResultado[0];
+    } else {
+      return this.mensajesResultado[1];
+    }
   }
 
   updateWinner(winner: string): void {
