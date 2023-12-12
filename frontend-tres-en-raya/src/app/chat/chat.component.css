@@ -70,7 +70,7 @@
 .join-notify{
   padding: 7px 10px;
   box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
-  display: flex;
+  display: inline-block;
   text-align: center;
   background-color: rgb(255, 248, 210);
   font-weight: 400;

@@ -59,9 +59,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.socketListeners();
     this.joinChat();
     this.getMessages();
-
   }
-
 
   ngAfterViewChecked() {
     let d = document.querySelector('.chat-messages');
@@ -87,9 +85,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.http.get<Game>(`${this.baseUrl}game/${this.player!.roomId}`).subscribe((game: Game) => {
       this.socketService.emit('player-join-chat', game);
       console.log('joinChat');
-
     });
-
   }
 
   toggleChat(event: Event): void {
@@ -109,8 +105,6 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     });
     return
   }
-
-
 
 
   sendMessage(): void {
@@ -175,7 +169,6 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       accumulator[dateKey].push(currentMessage);
       return accumulator;
     };
-
 
     // Usamos reduce para agrupar los mensajes
     const groupedMessages = messages.reduce(customReducer, {});
