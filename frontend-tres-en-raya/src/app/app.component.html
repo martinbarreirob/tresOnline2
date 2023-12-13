@@ -4,6 +4,3 @@
 <app-list-games *ngIf="isRegistered && !isOnGame" (emitEnterGame)="setEnterGame()" (buttonLogout)="logout()"></app-list-games>
 
 <app-game *ngIf="isOnGame" (buttonLogout)="logout()"></app-game>
-
-
- <!-- <app-data-viewer></app-data-viewer> -->

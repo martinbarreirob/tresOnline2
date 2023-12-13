@@ -4,7 +4,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
-import { DataViewerComponent } from './data-viewer/data-viewer.component';
 import { LoggingComponent } from './logging/logging.component';
 
 import { FormsModule } from '@angular/forms';
@@ -16,7 +15,6 @@ import { ChatComponent } from './chat/chat.component';
 @NgModule({
   declarations: [
     AppComponent,
-    DataViewerComponent,
     LoggingComponent,
     GameComponent,
     ListGamesComponent,

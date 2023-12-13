@@ -25,7 +25,7 @@ export class ListGamesComponent implements OnInit, OnDestroy {
   @Output() emitEnterGame = new EventEmitter<void>();
 
   private disconnectionSubscription: Subscription = new Subscription();
-  private baseUrl: string = 'http://192.168.0.37:3000/';
+  private baseUrl: string = 'http://localhost:3000/';
 
   games: Array<Game> = [];
   players: Array<Player> = [];

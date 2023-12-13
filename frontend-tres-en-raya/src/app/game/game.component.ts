@@ -34,7 +34,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 export class GameComponent implements OnInit, OnDestroy {
   @Output() buttonLogout = new EventEmitter<void>();
 
-  private baseUrl: string = 'http://192.168.0.37:3000/';
+  private baseUrl: string = 'http://localhost:3000/';
 
   board: string[][] = [
     ['', '', ''],

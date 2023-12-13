@@ -11,7 +11,7 @@ export class SocketService {
   public socket: any;
 
   constructor() {
-    this.socket = io.connect('http://192.168.0.37:3000'); // Asume que tu servidor backend corre en el puerto 3000
+    this.socket = io.connect('http://localhost:3000'); // Asume que tu servidor backend corre en el puerto 3000
   }
 
   // Método para emitir eventos

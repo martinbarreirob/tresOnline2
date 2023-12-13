@@ -14,7 +14,7 @@ import { MessageModule } from './message.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: '192.168.0.37',
+      host: 'localhost',
       port: 3306,
       username: 'martin', // Usuario por defecto en XAMPP
       password: 'abc123.,',     // Contraseña vacía por defecto en XAMPP

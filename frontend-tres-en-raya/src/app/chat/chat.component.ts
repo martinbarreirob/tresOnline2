@@ -13,7 +13,7 @@ import { SocketService } from '../socket.service';
 
 export class ChatComponent implements OnInit, AfterViewChecked {
   //public player: Player | null = { id: 1153, nombre: 'Martin' };
-  private baseUrl: string = 'http://192.168.0.37:3000/';
+  private baseUrl: string = 'http://localhost:3000/';
   public isOpen: boolean = false;
   public player: Player | null = this.playerService.getCurrentPlayer();
   public opponent: Player | null = this.playerService.getCurrentOpponent();
